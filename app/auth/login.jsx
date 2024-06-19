@@ -7,15 +7,15 @@ import { Link } from "expo-router";
 export default function LogIn() {
   	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
+			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
 				<View style={styles.logo}>
 					<Image source={require("../../assets/images/bike.jpg")} style={styles.image}/>
 					<Text style={styles.logoText}>JaJo</Text>
 				</View>
 
-				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} secure={false}/>
-				<InputField label={"Password"} placeholder={"Enter Your Password"} secure={true}/>
+				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} secure={false} width={295}/>
+				<InputField label={"Password"} placeholder={"Enter Your Password"} secure={true} width={295}/>
 
 				<Button text={"Sign In"} dark={true} width={295} height={50}/>
 
