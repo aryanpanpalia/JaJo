@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TextInput} from 'react-native'
 import React from 'react'
 
-export default function InputField({label, placeholder, secure, width}) {
+export default function InputField({label, placeholder, secure, width, onChangeText}) {
     return (
         <View style={styles.inputField}>
             <Text style={styles.inputText}>{label}</Text>
-            <TextInput style={[styles.input, {width: width}]} placeholder={placeholder} placeholderTextColor="#898989" secureTextEntry={secure}/>
+            <TextInput style={[styles.input, {width: width}]} placeholder={placeholder} placeholderTextColor="#898989" secureTextEntry={secure} onChangeText={onChangeText}/>
         </View>
     )
 }

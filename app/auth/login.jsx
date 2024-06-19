@@ -5,6 +5,9 @@ import Button from "../../components/Button";
 import { Link } from "expo-router";
 
 export default function LogIn() {
+	const [number, setNumber] = useState()
+	const [password, setPassword] = useState()
+
   	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -14,8 +17,8 @@ export default function LogIn() {
 					<Text style={styles.logoText}>JaJo</Text>
 				</View>
 
-				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} secure={false} width={295}/>
-				<InputField label={"Password"} placeholder={"Enter Your Password"} secure={true} width={295}/>
+				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} secure={false} width={295} onChangeText={(text) => setNumber(text)}/>
+				<InputField label={"Password"} placeholder={"Enter Your Password"} secure={true} width={295} onChangeText={(text) => setPassword(text)}/>
 
 				<Button text={"Sign In"} dark={true} width={295} height={50}/>
 

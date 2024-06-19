@@ -1,6 +1,6 @@
 import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import React from 'react'
+import React, { useState } from 'react'
 import Button from '../../components/Button'
 import InputField from '../../components/InputField'
 
@@ -10,6 +10,12 @@ import InputField from '../../components/InputField'
 */
 
 export default function SignUp() {
+    const [role, setRole] = useState("Customer")
+    const [name, setName] = useState();
+    const [number, setNumber] = useState();
+    const [password, setPassword] = useState();
+    const [confirmPassword, setConfirmPassword] = useState();
+
     return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -28,16 +34,16 @@ export default function SignUp() {
                     <View style={styles.selectRole}>
                         <Text style={styles.selectRoleText}>Select Role</Text>
                         <View style={styles.buttonGroup}>
-                            <Button text={"Customer"} width={"32%"} height={50} dark={true}/>
-                            <Button text={"Rider"} width={"32%"} height={50} dark={false}/>
-                            <Button text={"Client"} width={"32%"} height={50} dark={false}/>
+                            <Button text={"Customer"} width={"32%"} height={50} dark={role === "Customer"} onPress={() => setRole("Customer")}/>
+                            <Button text={"Rider"} width={"32%"} height={50} dark={role === "Rider"} onPress={() => setRole("Rider")}/>
+                            <Button text={"Client"} width={"32%"} height={50} dark={role === "Client"} onPress={() => setRole("Client")}/>
                         </View>
                     </View>
 
-                    <InputField label={"Name"} placeholder={"Enter Name Here"} secure={false} width={335}/>
-                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} secure={false} width={335}/>
-                    <InputField label={"Password"} placeholder={"Enter Password Here"} secure={false} width={335}/>
-                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secure={false} width={335}/>
+                    <InputField label={"Name"} placeholder={"Enter Name Here"} secure={false} width={335} onChangeText={(text) => setName(text)}/>
+                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} secure={false} width={335} onChangeText={(text) => setNumber(text)}/>
+                    <InputField label={"Password"} placeholder={"Enter Password Here"} secure={true} width={335} onChangeText={(text) => setPassword(text)}/>
+                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secure={true} width={335} onChangeText={(text) => setConfirmPassword(text)}/>
                 </View>
 
                 <Button text={"Next"} width={335} height={50} dark={true}/>
