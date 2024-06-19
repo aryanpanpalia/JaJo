@@ -1,9 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text } from 'react-native'
 import React from 'react'
 
-export default function Button({text, width, height, dark, onPress}) {
+export default function Button({text, dark, ...restProps}) {
     return (
-        <Pressable style={[dark ? styles.darkButton : styles.lightButton, {width: width, height: height}]} onPress={onPress}>
+        <Pressable style={dark ? styles.darkButton : styles.lightButton} {...restProps}>
             <Text style={dark ? styles.darkButtonText : styles.lightButtonText}>{text}</Text>
         </Pressable>
     )
