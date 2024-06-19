@@ -3,6 +3,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React, { useState } from 'react'
 import Button from '../../components/Button'
 import InputField from '../../components/InputField'
+import { supabase } from "../../lib/supabase"
+import { router } from "expo-router"
 
 /*
     https://medium.com/@nickopops/keyboardavoidingview-not-working-properly-c413c0a200d4
@@ -16,8 +18,54 @@ export default function SignUp() {
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
 
+    const [loading, setLoading] = useState(false);
     const [waitingForOTP, setWaitingForOTP] = useState(false);
     const [OTP, setOTP] = useState();
+
+    async function sendOTP() {
+        if(password !== confirmPassword) {
+            console.log("passwords do not match")
+            return
+        } else if(password.length < 6) {
+            console.log("password too short")
+            return
+        }
+
+        setLoading(true)
+
+        const { data, error } = await supabase.auth.signUp({
+            phone: number,
+            password: password,
+        })
+
+        if(error) {
+            console.log(error)
+        } else {
+            setWaitingForOTP(true)
+        }
+        
+        setLoading(false)
+    }
+
+    async function verifyOTP() {
+        if(OTP.length !== 6) return
+        
+        setLoading(true)
+
+        const { data: { session }, error } = await supabase.auth.verifyOtp({
+            phone: number,
+            token: OTP,
+            type: 'sms',
+        })
+
+        setLoading(false)
+
+        if(error) {
+            console.log(error)
+        } else {
+            router.replace("/dashboard")
+        }
+    }
 
     return !waitingForOTP ? (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -49,7 +97,7 @@ export default function SignUp() {
                     <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)}/>
                 </View>
 
-                <Button text={"Next"} width={335} height={50} dark={true} onPress={() => setWaitingForOTP(true)}/>
+                <Button text={"Next"} width={335} height={50} dark={true} disabled={loading} onPress={sendOTP}/>
 
                 <View style={{flex: 1}} />
 
@@ -71,7 +119,7 @@ export default function SignUp() {
 
                 <InputField label={"OTP"} placeholder={"Enter OTP Here"} width={335} keyboardType={"numeric"} maxLength={6} onChangeText={(text) => setOTP(text)} />
                 
-                <Button text={"Sign Up"} width={335} height={50} dark={true} />
+                <Button text={"Sign Up"} width={335} height={50} dark={true} disabled={loading} onPress={verifyOTP} />
                 
                 <View style={{flex: 1}} />
 

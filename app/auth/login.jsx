@@ -2,11 +2,32 @@ import { Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet,
 import React, { useState } from 'react'
 import InputField from "../../components/InputField";
 import Button from "../../components/Button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { supabase } from "../../lib/supabase"
 
 export default function LogIn() {
 	const [number, setNumber] = useState()
 	const [password, setPassword] = useState()
+	const [loading, setLoading] = useState(false);
+
+	async function signIn() {
+		if(!number || !password) return
+
+		setLoading(true)
+
+		const { user, error } = await supabase.auth.signInWithPassword({
+			phone: number,
+			password: password,
+		})
+
+		setLoading(false)
+
+		if(error) {
+			console.log(error)
+		} else {
+			router.replace("/dashboard")
+		}
+	}
 
   	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -20,7 +41,7 @@ export default function LogIn() {
 				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} width={295} onChangeText={(text) => setNumber(text)}/>
 				<InputField label={"Password"} secureTextEntry placeholder={"Enter Your Password"} width={295} onChangeText={(text) => setPassword(text)}/>
 
-				<Button text={"Sign In"} dark={true} width={295} height={50}/>
+				<Button text={"Sign In"} dark={true} width={295} height={50} disabled={loading} onPress={signIn}/>
 
 				<View style={styles.signUp}>
 					<Text>Don't have an account?</Text>
