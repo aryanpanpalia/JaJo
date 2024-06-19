@@ -16,7 +16,10 @@ export default function SignUp() {
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
 
-    return (
+    const [waitingForOTP, setWaitingForOTP] = useState(false);
+    const [OTP, setOTP] = useState();
+
+    return !waitingForOTP ? (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
@@ -46,12 +49,34 @@ export default function SignUp() {
                     <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)}/>
                 </View>
 
-                <Button text={"Next"} width={335} height={50} dark={true}/>
+                <Button text={"Next"} width={335} height={50} dark={true} onPress={() => setWaitingForOTP(true)}/>
 
                 <View style={{flex: 1}} />
 
 			</KeyboardAvoidingView>
 		</TouchableWithoutFeedback>
+    ) : (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+            <View style={styles.container}>
+                
+                <View style={styles.header}>
+                    <MaterialCommunityIcons name="chevron-left" size={30} color="black" style={styles.chevron} />
+                    <Text style={styles.headerText}>JaJo</Text>
+                </View>
+
+                <View style={styles.information}>
+                    <Text style={styles.mainInformationText}>Enter Confirmation Code</Text>
+                    <Text>Enter the 6-digit code we just sent to you</Text>
+                </View>
+
+                <InputField label={"OTP"} placeholder={"Enter OTP Here"} width={335} keyboardType={"numeric"} maxLength={6} onChangeText={(text) => setOTP(text)} />
+                
+                <Button text={"Sign Up"} width={335} height={50} dark={true} />
+                
+                <View style={{flex: 1}} />
+
+            </View>
+        </TouchableWithoutFeedback>
     )
 }
 
