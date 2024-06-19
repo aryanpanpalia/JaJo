@@ -17,8 +17,8 @@ export default function LogIn() {
 					<Text style={styles.logoText}>JaJo</Text>
 				</View>
 
-				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} secure={false} width={295} onChangeText={(text) => setNumber(text)}/>
-				<InputField label={"Password"} placeholder={"Enter Your Password"} secure={true} width={295} onChangeText={(text) => setPassword(text)}/>
+				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} width={295} onChangeText={(text) => setNumber(text)}/>
+				<InputField label={"Password"} secureTextEntry placeholder={"Enter Your Password"} width={295} onChangeText={(text) => setPassword(text)}/>
 
 				<Button text={"Sign In"} dark={true} width={295} height={50}/>
 

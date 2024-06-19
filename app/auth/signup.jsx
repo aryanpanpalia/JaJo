@@ -40,10 +40,10 @@ export default function SignUp() {
                         </View>
                     </View>
 
-                    <InputField label={"Name"} placeholder={"Enter Name Here"} secure={false} width={335} onChangeText={(text) => setName(text)}/>
-                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} secure={false} width={335} onChangeText={(text) => setNumber(text)}/>
-                    <InputField label={"Password"} placeholder={"Enter Password Here"} secure={true} width={335} onChangeText={(text) => setPassword(text)}/>
-                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secure={true} width={335} onChangeText={(text) => setConfirmPassword(text)}/>
+                    <InputField label={"Name"} placeholder={"Enter Name Here"} width={335} onChangeText={(text) => setName(text)}/>
+                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} width={335} onChangeText={(text) => setNumber(text)}/>
+                    <InputField label={"Password"} placeholder={"Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setPassword(text)}/>
+                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)}/>
                 </View>
 
                 <Button text={"Next"} width={335} height={50} dark={true}/>
