@@ -14,6 +14,7 @@ import { router } from "expo-router"
 export default function SignUp() {
     const [role, setRole] = useState("Customer")
     const [name, setName] = useState();
+    const [clientName, setClientName] = useState();
     const [number, setNumber] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
@@ -36,6 +37,13 @@ export default function SignUp() {
         const { data, error } = await supabase.auth.signUp({
             phone: number,
             password: password,
+            options: {
+                data: {
+                    name: name,
+                    role: role,
+                    client_name: role === "Client" ? clientName : null
+                }
+            }
         })
 
         if(error) {
@@ -92,6 +100,7 @@ export default function SignUp() {
                     </View>
 
                     <InputField label={"Name"} placeholder={"Enter Name Here"} width={335} onChangeText={(text) => setName(text)}/>
+                    {role === "Client" && <InputField label={"Client Name"} placeholder={"Enter Client Name Here"} width={335} onChangeText={(text) => setClientName(text)}/>}
                     <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} width={335} onChangeText={(text) => setNumber(text)}/>
                     <InputField label={"Password"} placeholder={"Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setPassword(text)}/>
                     <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)}/>
