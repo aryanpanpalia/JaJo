@@ -14,23 +14,30 @@ import { router } from "expo-router"
 export default function SignUp() {
     const [role, setRole] = useState("Customer")
     const [name, setName] = useState();
+
     const [clientName, setClientName] = useState();
+    const [clientNameError, setClientNameError] = useState(null);
+    
     const [number, setNumber] = useState();
+    const [numberError, setNumberError] = useState(null)
+    
     const [password, setPassword] = useState();
+    const [passwordError, setPasswordError] = useState(null);
+    
     const [confirmPassword, setConfirmPassword] = useState();
+    const [confirmPasswordError, setConfirmPasswordError] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [waitingForOTP, setWaitingForOTP] = useState(false);
     const [OTP, setOTP] = useState();
 
     async function sendOTP() {
-        if(password !== confirmPassword) {
-            console.log("passwords do not match")
-            return
-        } else if(password.length < 6) {
-            console.log("password too short")
-            return
-        }
+        setNumberError(!number ? "Please enter your phone number" : null)
+        setPasswordError(!password || password.length < 6 ? "Password must be at least 6 characters long" : null)
+        setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match" : null)
+        setClientNameError(role === "Client" && !clientName ? "Must provide Client Name" : null)
+
+        if(!number || !password || password.length < 6 || password !== confirmPassword || role === "Client" && !clientName) return
 
         setLoading(true)
 
@@ -47,6 +54,7 @@ export default function SignUp() {
         })
 
         if(error) {
+            setNumberError("Invalid. Use only numbers and include country code")
             console.log(error)
         } else {
             setWaitingForOTP(true)
@@ -100,10 +108,10 @@ export default function SignUp() {
                     </View>
 
                     <InputField label={"Name"} placeholder={"Enter Name Here"} width={335} onChangeText={(text) => setName(text)}/>
-                    {role === "Client" && <InputField label={"Client Name"} placeholder={"Enter Client Name Here"} width={335} onChangeText={(text) => setClientName(text)}/>}
-                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} width={335} onChangeText={(text) => setNumber(text)}/>
-                    <InputField label={"Password"} placeholder={"Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setPassword(text)}/>
-                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)}/>
+                    {role === "Client" && <InputField label={"Client Name"} placeholder={"Enter Client Name Here"} width={335} onChangeText={(text) => setClientName(text)} error={clientNameError}/>}
+                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} width={335} onChangeText={(text) => setNumber(text)} error={numberError} keyboardType="phone-pad"/>
+                    <InputField label={"Password"} placeholder={"Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setPassword(text)} error={passwordError}/>
+                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)} error={confirmPasswordError}/>
                 </View>
 
                 <Button text={"Next"} width={335} height={50} dark={true} disabled={loading} onPress={sendOTP}/>

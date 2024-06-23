@@ -7,10 +7,17 @@ import { supabase } from "../../lib/supabase"
 
 export default function LogIn() {
 	const [number, setNumber] = useState()
+	const [numberError, setNumberError] = useState()
+
 	const [password, setPassword] = useState()
+	const [passwordError, setPasswordError] = useState();
+
 	const [loading, setLoading] = useState(false);
 
 	async function signIn() {
+		setNumberError(!number ? "Please enter your phone number" : null)
+		setPasswordError(!password ? "Please enter your password" : null)	
+
 		if(!number || !password) return
 
 		setLoading(true)
@@ -23,6 +30,8 @@ export default function LogIn() {
 		setLoading(false)
 
 		if(error) {
+			setNumberError("Invalid Login Credentials")
+			setPasswordError("Invalid Login Credentials")
 			console.log(error)
 		} else {
 			router.replace("/dashboard")
@@ -38,8 +47,8 @@ export default function LogIn() {
 					<Text style={styles.logoText}>JaJo</Text>
 				</View>
 
-				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} width={295} onChangeText={(text) => setNumber(text)}/>
-				<InputField label={"Password"} secureTextEntry placeholder={"Enter Your Password"} width={295} onChangeText={(text) => setPassword(text)}/>
+				<InputField label={"Phone Number"} placeholder={"Enter Your Phone Number"} width={295} onChangeText={(text) => setNumber(text)} error={numberError} keyboardType="phone-pad" />
+				<InputField label={"Password"} secureTextEntry placeholder={"Enter Your Password"} width={295} onChangeText={(text) => setPassword(text)} error={passwordError} />
 
 				<Button text={"Sign In"} dark={true} width={295} height={50} disabled={loading} onPress={signIn}/>
 

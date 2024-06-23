@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput} from 'react-native'
 import React from 'react'
 
-export default function InputField({label, ...restProps}) {
+export default function InputField({label, error, ...restProps}) {
     return (
         <View style={styles.inputField}>
             <Text style={styles.inputText}>{label}</Text>
-            <TextInput style={styles.input} placeholderTextColor="#898989" {...restProps}/>
+            <TextInput style={[styles.input, error && styles.errorInput]} placeholderTextColor="#898989" {...restProps}/>
+            {error && <Text style={styles.errorText}>{error}</Text>}
         </View>
     )
 }
@@ -24,5 +25,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingLeft: 15,
         paddingVertical: 5
-    }
+    },
+    errorInput: {
+        borderColor: 'red',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+    },
 })
