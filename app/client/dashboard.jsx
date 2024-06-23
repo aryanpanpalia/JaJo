@@ -2,8 +2,8 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Dropdown } from 'react-native-element-dropdown'
-import NavigationButton from '../components/NavigationButton'
-import BottomBar from '../components/BottomBar'
+import NavigationButton from '../../components/NavigationButton'
+import BottomBar from '../../components/BottomBar'
 
 const data = {
 	overall: [

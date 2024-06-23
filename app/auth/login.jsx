@@ -34,7 +34,14 @@ export default function LogIn() {
 			setPasswordError("Invalid Login Credentials")
 			console.log(error)
 		} else {
-			router.replace("/dashboard")
+			const { data: { user } } = await supabase.auth.getUser()
+			const role = user.user_metadata.role
+
+			if(role === "Client") {
+				router.replace("/client/dashboard")
+			} else {
+				console.log("Attempting to login non-client user. Functionality not implemented yet.")
+			}
 		}
 	}
 
