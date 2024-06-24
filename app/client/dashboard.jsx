@@ -1,9 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Dropdown } from 'react-native-element-dropdown'
 import NavigationButton from '../../components/NavigationButton'
 import BottomBar from '../../components/BottomBar'
+import { useNavigation } from 'expo-router'
 
 const data = {
 	overall: [
@@ -35,6 +36,8 @@ const data = {
 export default function Dashboard() {
     const [timespan, setTimespan] = useState("Today");
 	const [selectedStatistic, setSelectedStatistic] = useState("locations");
+
+	const navigation = useNavigation()
 
 	function Header() {
 		
@@ -73,7 +76,9 @@ export default function Dashboard() {
 
 		return (
 			<View style={styles.header}>
-				<MaterialCommunityIcons name='menu' size={30} color="black" style={styles.menu} />
+				<Pressable style={styles.menu} onPress={() => navigation.openDrawer()}>
+					<MaterialCommunityIcons name='menu' size={30} color="black" />
+				</Pressable>
  				<Text style={styles.headerText}>Dashboard</Text>
 				<Dropdown
 					style={styles.dropdown}

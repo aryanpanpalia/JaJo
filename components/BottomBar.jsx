@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { router } from 'expo-router';
 
 const dashboard = require('../assets/images/nav/DashboardLayout.png');
 const dashboardFilled = require('../assets/images/nav/DashboardLayoutFilled.png');
@@ -26,11 +27,25 @@ export default function BottomBar({selected}) {
 
   	return (
 		<View style={styles.container}>
-			<Image source={dashboardImage} style={{width: 30, height: 30}} />
-			<Image source={orderImage} style={{width: 30, height: 30}} />
-			<Image source={riderImage} style={{width: 30, height: 30}} />
-			<Image source={messagingImage} style={{width: 30, height: 30}} />
-			<Image source={accountImage} style={{width: 30, height: 30}} />
+			<Pressable onPress={() => router.navigate("/client/dashboard")}>
+				<Image source={dashboardImage} style={{width: 30, height: 30}} />
+			</Pressable>
+			
+			<Pressable onPress={() => router.navigate("/client/order-administration")}>
+				<Image source={orderImage} style={{width: 30, height: 30}} />
+			</Pressable>
+			
+			<Pressable onPress={() => router.navigate("/client/assign-riders")}>
+				<Image source={riderImage} style={{width: 30, height: 30}} />
+			</Pressable>
+			
+			<Pressable onPress={() => router.navigate("/client/messaging")}>
+				<Image source={messagingImage} style={{width: 30, height: 30}} />
+			</Pressable>
+			
+			<Pressable onPress={() => router.navigate("/client/account")}>
+				<Image source={accountImage} style={{width: 30, height: 30}} />
+			</Pressable>
 		</View>
 	)	
 }
