@@ -1,10 +1,9 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Dropdown } from 'react-native-element-dropdown'
 import NavigationButton from '../../components/NavigationButton'
 import BottomBar from '../../components/BottomBar'
 import { useNavigation } from 'expo-router'
+import Header from '../../components/Header'
 
 const data = {
 	overall: [
@@ -33,65 +32,15 @@ const data = {
 	]
 }
 
+const dropdownData = [
+	{label: 'Today', value: 'Today'},
+	{label: 'Week', value: 'Week'},
+	{label: 'Month', value: 'Month'},
+]
+
 export default function Dashboard() {
     const [timespan, setTimespan] = useState("Today");
 	const [selectedStatistic, setSelectedStatistic] = useState("locations");
-
-	const navigation = useNavigation()
-
-	function Header() {
-		
-		const styles = StyleSheet.create({
-			header: {
-				width: 335,
-				flexDirection: "row",
-				justifyContent: "center",
-				alignItems: "center",
-			},
-			menu: {
-				position: "absolute",
-				left: 0,
-			},
-			headerText: {
-				fontSize: 24,
-				fontWeight: "700",
-			},
-			dropdown: {
-				position: "absolute",
-				right: 0,
-				width: 85,
-				height: 30,
-				borderColor: 'gray',
-				borderWidth: 0.5,
-				borderRadius: 8,
-				paddingHorizontal: 8,
-			}
-		})
-
-		const dropdownData = [
-			{label: 'Today', value: 'Today'},
-			{label: 'Week', value: 'Week'},
-			{label: 'Month', value: 'Month'},
-		]
-
-		return (
-			<View style={styles.header}>
-				<Pressable style={styles.menu} onPress={() => navigation.openDrawer()}>
-					<MaterialCommunityIcons name='menu' size={30} color="black" />
-				</Pressable>
- 				<Text style={styles.headerText}>Dashboard</Text>
-				<Dropdown
-					style={styles.dropdown}
-					data={dropdownData}
-					maxHeight={300}
-					labelField="label"
-					valueField="value"
-					value={timespan}
-					onChange={item => setTimespan(item.value)}
-				/>
-			</View>			
-		)
-	}
 
 	function OverallStatistic(item, index) {
 
@@ -169,7 +118,7 @@ export default function Dashboard() {
 
     return (
 		<View style={styles.container}>
-			<Header />
+			<Header label={"Dashboard"} dropdownData={dropdownData} dropdownValue={timespan} onDropdownChange={item => setTimespan(item.value)} />
 
 			<View style={styles.overallStatistics}>
 				{ data.overall.map(OverallStatistic) }
