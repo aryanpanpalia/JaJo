@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import BottomBar from '../../../components/BottomBar'
+import Header from '../../../components/Header'
 
 export default function Account() {
   return (
 	<View style={styles.container}>
-	  <Text>Account</Text>
-	  <BottomBar selected={"account"} />
+		<Header label={"Account"} />
+		<BottomBar selected={"account"} />
 	</View>
   )
 }
@@ -14,7 +15,9 @@ export default function Account() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "center"
-	}
+		alignItems: "center",
+		paddingVertical: 60,
+		gap: 20,
+		backgroundColor: "white"
+	},
 })
