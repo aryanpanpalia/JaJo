@@ -1,6 +1,7 @@
 import {FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View} from 'react-native'
 import React, {useRef, useState} from 'react'
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
+import {router} from "expo-router";
 
 export default function Chat({title, messageHistory, onMessageSend}) {
     const [messages, setMessages] = useState(messageHistory)
@@ -36,7 +37,9 @@ export default function Chat({title, messageHistory, onMessageSend}) {
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
             <View style={styles.header}>
-                <MaterialCommunityIcons name="chevron-left" size={30} color="black" style={styles.chevron}/>
+                <Pressable style={styles.chevron} onPress={router.back} >
+                    <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
+                </Pressable>
                 <Text style={styles.headerText}>{title}</Text>
             </View>
 

@@ -1,4 +1,4 @@
-import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React, { useState } from 'react'
 import Button from '../../components/Button'
@@ -95,7 +95,9 @@ export default function SignUp() {
 			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
                 <View style={styles.header}>
-                    <MaterialCommunityIcons name="chevron-left" size={30} color="black" style={styles.chevron} />
+                    <Pressable style={styles.chevron} onPress={router.back}>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
+                    </Pressable>
                     <Text style={styles.headerText}>JaJo</Text>
                 </View>
 
@@ -132,7 +134,9 @@ export default function SignUp() {
             <View style={styles.container}>
                 
                 <View style={styles.header}>
-                    <MaterialCommunityIcons name="chevron-left" size={30} color="black" style={styles.chevron} />
+                    <Pressable style={styles.chevron} onPress={() => setWaitingForOTP(false)}>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
+                    </Pressable>
                     <Text style={styles.headerText}>JaJo</Text>
                 </View>
 
