@@ -39,8 +39,10 @@ export default function LogIn() {
 
 			if(role === "Client") {
 				router.replace("/client/dashboard")
+			} else if(role === "Rider") {
+				router.replace("/rider/select-client")
 			} else {
-				console.log("Attempting to login non-client user. Functionality not implemented yet.")
+				console.log("Attempting to login Customer. Functionality not implemented yet.")
 			}
 		}
 	}
