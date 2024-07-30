@@ -1,6 +1,6 @@
 import {Animated, FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native'
 import React, {useRef, useState} from 'react'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 import Button from "../../../components/Button";
 import {MaterialIcons} from "@expo/vector-icons";

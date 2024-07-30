@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 import NavigationButton from '../../../components/NavigationButton'
 

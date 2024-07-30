@@ -1,6 +1,6 @@
 import {Animated, Keyboard, Modal, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import React, {useRef, useState} from 'react'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 import InputField from "../../../components/InputField";
 import Button from "../../../components/Button";

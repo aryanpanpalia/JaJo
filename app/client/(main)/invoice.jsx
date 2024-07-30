@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 
 export default function Invoice() {

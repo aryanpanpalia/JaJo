@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import NavigationButton from '../../../components/NavigationButton'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import { useNavigation } from 'expo-router'
 import Header from '../../../components/Header'
 

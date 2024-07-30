@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons'
 import React, { useRef, useState } from 'react'
 import { Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'

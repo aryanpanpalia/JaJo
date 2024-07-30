@@ -1,6 +1,6 @@
 import { Animated, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useRef, useState } from 'react'
-import BottomBar from '../../../components/BottomBar'
+import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 import DateTimePickerModal from "react-native-modal-datetime-picker"
 import Button from '../../../components/Button'

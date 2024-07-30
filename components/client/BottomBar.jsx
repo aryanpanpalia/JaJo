@@ -2,20 +2,20 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { router } from 'expo-router';
 
-const dashboard = require('../assets/images/nav/DashboardLayout.png');
-const dashboardFilled = require('../assets/images/nav/DashboardLayoutFilled.png');
+const dashboard = require('../../assets/images/nav/DashboardLayout.png');
+const dashboardFilled = require('../../assets/images/nav/DashboardLayoutFilled.png');
 
-const order = require('../assets/images/nav/OrderAdministration.png');
-const orderFilled = require('../assets/images/nav/OrderAdministrationFilled.png');
+const order = require('../../assets/images/nav/OrderAdministration.png');
+const orderFilled = require('../../assets/images/nav/OrderAdministrationFilled.png');
 
-const rider = require('../assets/images/nav/AssignRider.png');
-const riderFilled = require('../assets/images/nav/AssignRiderFilled.png');
+const rider = require('../../assets/images/nav/AssignRider.png');
+const riderFilled = require('../../assets/images/nav/AssignRiderFilled.png');
 
-const messaging = require('../assets/images/nav/Messaging.png');
-const messagingFilled = require('../assets/images/nav/MessagingFilled.png');
+const messaging = require('../../assets/images/nav/Messaging.png');
+const messagingFilled = require('../../assets/images/nav/MessagingFilled.png');
 
-const account = require('../assets/images/nav/Account.png');
-const accountFilled = require('../assets/images/nav/AccountFilled.png');
+const account = require('../../assets/images/nav/Account.png');
+const accountFilled = require('../../assets/images/nav/AccountFilled.png');
 
 export default function BottomBar({selected}) {
 

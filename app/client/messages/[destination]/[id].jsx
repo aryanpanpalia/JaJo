@@ -1,6 +1,6 @@
 import React from 'react'
 import {useLocalSearchParams} from "expo-router";
-import Chat from "../../../../components/Chat";
+import Chat from "../../../../components/client/Chat";
 
 const data = {
     locations: ["Suasana Sentral", "The Sentral Residenses", "The Edge at Polaris", "Olentangy Falls"],
