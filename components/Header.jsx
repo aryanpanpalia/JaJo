@@ -4,11 +4,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Dropdown } from 'react-native-element-dropdown'
 import { useNavigation } from 'expo-router'
 
-export default function Header({label, dropdownData, dropdownValue, onDropdownChange}) {
+export default function Header({label, dropdownData, dropdownValue, onDropdownChange, style}) {
 	const navigation = useNavigation()
 
 	return (
-		<View style={styles.header}>
+		<View style={[styles.header, style]}>
 			<Pressable style={styles.menu} onPress={() => navigation.openDrawer()}>
 				<MaterialCommunityIcons name='menu' size={30} color="black" />
 			</Pressable>

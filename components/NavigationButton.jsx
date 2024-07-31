@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-export default function NavigationButton({text, selected, type, ...restProps}) {
+export default function NavigationButton({text, selected, type, style, ...restProps}) {
 
 	const styles = StyleSheet.create({
 		button: {
@@ -23,7 +23,7 @@ export default function NavigationButton({text, selected, type, ...restProps}) {
 	})
 	
 	return (
-		<Pressable style={styles.button} {...restProps}>
+		<Pressable style={[styles.button, style]} {...restProps}>
 			<Text style={styles.text}>{text}</Text>
 		</Pressable>
 	)
