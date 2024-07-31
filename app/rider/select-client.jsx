@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from 'react-native'
 import React, {useState} from 'react'
 import {Dropdown} from "react-native-element-dropdown";
 import Button from "../../components/Button";
+import {router} from "expo-router";
 
 const data = [
     {value: "Panpalia Products"},
@@ -21,7 +22,7 @@ export default function SelectClient() {
                 <Text style={styles.dropdownLabel}>Select Client</Text>
                 <Dropdown style={styles.dropdown} data={data} labelField={'value'} valueField={'value'} onChange={setClient}/>
             </View>
-            <Button text={"Next"} dark={true} width={"100%"} height={50}/>
+            <Button text={"Next"} dark={true} width={"100%"} height={50} onPress={() => router.push("/rider/dashboard")} />
         </View>
     )
 }
