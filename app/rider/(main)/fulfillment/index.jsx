@@ -8,14 +8,28 @@ import {router} from "expo-router";
 
 const locations = ["Suasana Sentral", "The Sentral Residenses", "The Edge at Polaris", "Olentangy Falls"]
 const data = [
-    {name: "Suasana Sentral", startTime: "08:00", endTime: "08:54", duration: "00:54"},
-    {name: "The Sentral Residenses", startTime: "09:06", endTime: "09:36", duration: "00:30"},
-    {name: "Olentangy Falls", startTime: "10:05", endTime: null, duration: "01:24"},
+    {
+        name: "Suasana Sentral",
+        startTime: new Date(new Date().setHours(8, 0)),
+        endTime: new Date(new Date().setHours(8, 54))
+    },
+    {
+        name: "The Sentral Residenses",
+        startTime: new Date(new Date().setHours(9, 6)),
+        endTime: new Date(new Date().setHours(9, 36))
+    },
+    {
+        name: "Olentangy Falls",
+        startTime: new Date(new Date().setHours(10, 5)),
+        endTime: null
+    },
 ]
 
 export default function Fulfillment() {
     const [modalVisible, setModalVisible] = useState(false)
-    const [workingLocation, setWorkingLocation] = useState(data.some(location => location.endTime === null))
+
+    const [riderHistory, setRiderHistory] = useState(data)
+    const [workingLocation, setWorkingLocation] = useState(riderHistory.some(location => location.endTime === null))
 
     const backgroundColor = useRef(new Animated.Value(0)).current
     const interpolatedColor = backgroundColor.interpolate({
@@ -56,7 +70,12 @@ export default function Fulfillment() {
 
         function submit() {
             if (location) {
-                data.push({name: location, startTime: "now", endTime: null, duration: "00:00"})
+                const now = new Date()
+                const newElement = {name: location, startTime: now, endTime: null}
+
+                setRiderHistory([...riderHistory, newElement])
+                data.push(newElement)
+
                 setWorkingLocation(true)
                 closeModal()
             }
@@ -107,7 +126,16 @@ export default function Fulfillment() {
         )
     }
 
-    function LocationInformation({location: {name, startTime, endTime, duration}, onPress}) {
+    function LocationInformation({location: {name, startTime, endTime}, onPress}) {
+        const startTimeString = startTime.toLocaleTimeString(undefined,{ hour: '2-digit', minute: '2-digit' })
+        const endTimeString = endTime ? endTime.toLocaleTimeString(undefined,{ hour: '2-digit', minute: '2-digit' }) : "----------"
+
+        const durationMS = (endTime ?? new Date()) - startTime
+        const durationMinutesTotal = durationMS / 1000 / 60
+        const durationHours = Math.floor(durationMinutesTotal / 60)
+        const durationMinutes = Math.floor(durationMinutesTotal % 60)
+        const durationString = `${String(durationHours).padStart(2, '0')}:${String(durationMinutes).padStart(2, '0')}`;
+
         const styles = StyleSheet.create({
             locationInformation: {
                 padding: 15,
@@ -129,18 +157,41 @@ export default function Fulfillment() {
             <Pressable style={styles.locationInformation} onPress={onPress}>
                 <View style={styles.row}>
                     <Text style={styles.main}>{name}</Text>
-                    <Text style={styles.main}>{duration}</Text>
+                    <Text style={styles.main}>{durationString}</Text>
                 </View>
                 <View style={styles.row}>
                     <Text>Start</Text>
-                    <Text>{startTime}</Text>
+                    <Text>{startTimeString}</Text>
                 </View>
                 <View style={styles.row}>
                     <Text>End</Text>
-                    <Text>{endTime ?? "-----"}</Text>
+                    <Text>{endTimeString}</Text>
                 </View>
             </Pressable>
         )
+    }
+
+    function startNew() {
+        if (!workingLocation) {
+            openModal()
+        }
+    }
+
+    function endCurrent() {
+        if(workingLocation) {
+            const now = new Date()
+
+            const updatedRiderHistory = [...riderHistory]
+            updatedRiderHistory[updatedRiderHistory.length - 1] = {
+                ...updatedRiderHistory[updatedRiderHistory.length - 1],
+                endTime: now
+            }
+
+            setRiderHistory(updatedRiderHistory)
+            data[data.length - 1].endTime = now
+
+            setWorkingLocation(false)
+        }
     }
 
     return (
@@ -148,17 +199,8 @@ export default function Fulfillment() {
             <Header label={"Fulfillment"} style={styles.header}/>
 
             <View style={styles.row}>
-                <Button text={workingLocation ? "Started" : "Start New"} dark={!workingLocation} style={styles.button} onPress={() => {
-                    if (!workingLocation) {
-                        openModal()
-                    }
-                }}/>
-                <Button text={workingLocation ? "End Current" : "Ended"} dark={workingLocation} style={styles.button} onPress={() => {
-                    if (workingLocation) {
-                        data[data.length - 1].endTime = "now"
-                        setWorkingLocation(false)
-                    }
-                }}/>
+                <Button text={workingLocation ? "Started" : "Start New"} dark={!workingLocation} style={styles.button} onPress={startNew}/>
+                <Button text={workingLocation ? "End Current" : "Ended"} dark={workingLocation} style={styles.button} onPress={endCurrent}/>
             </View>
 
             <ScrollView contentContainerStyle={styles.locations}>
