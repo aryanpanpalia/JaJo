@@ -1,6 +1,6 @@
 import {useLocalSearchParams} from "expo-router";
 import React, {useState} from 'react'
-import Chat from "../../../components/client/Chat";
+import Chat from "../../../components/Chat";
 
 const messageHistory = [
     {name: "Client", messages: []},

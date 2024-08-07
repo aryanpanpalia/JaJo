@@ -1,6 +1,6 @@
 import React from 'react'
 import {useLocalSearchParams} from "expo-router";
-import Chat from "../../../../components/client/Chat";
+import Chat from "../../../../components/Chat";
 
 const data = {
     locations: [
