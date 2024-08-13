@@ -78,10 +78,11 @@ export default function StaffManagement() {
         const styles = StyleSheet.create({
             modal: {
                 width: "100%",
-                gap: 15,
-                padding: 40,
                 backgroundColor: "white",
                 borderRadius: 10,
+                paddingHorizontal: 25,
+                paddingVertical: 50,
+                gap: 15,
             },
             availability: {
                 width: "100%",
@@ -106,10 +107,6 @@ export default function StaffManagement() {
             },
             availabilityCircleText: {
                 fontSize: 16
-            },
-            buttons: {
-                flexDirection: "row",
-                gap: 10
             }
         })
 
@@ -164,10 +161,7 @@ export default function StaffManagement() {
                             </View>
                         </View>
 
-                        <View style={styles.buttons}>
-                            <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
-                            <Button text={"Cancel"} dark={false} width={100} height={50} onPress={closeModal}/>
-                        </View>
+                        <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -178,22 +172,19 @@ export default function StaffManagement() {
         const styles = StyleSheet.create({
             worker: {
                 width: "100%",
-                height: 100,
-                padding: 10,
+                padding: 15,
                 borderWidth: 1,
                 borderRadius: 10,
-                paddingLeft: 20,
-                marginBottom: 10
+                gap: 5
             },
             name: {
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: "600"
             },
             bottom: {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginTop: 5
             },
             circles: {
                 flexDirection: "row",
@@ -252,7 +243,7 @@ export default function StaffManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Staff"}/>
+            <Header label={"Staff"} style={styles.header}/>
 
             <ScrollView contentContainerStyle={styles.staff}>
                 {data.map((item, index) =>
@@ -270,14 +261,17 @@ export default function StaffManagement() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
+        gap: 20,
         paddingTop: 60,
         paddingBottom: 80,
-        gap: 20,
+        paddingHorizontal: 25,
         backgroundColor: "white"
     },
+    header: {
+        width: "100%"
+    },
     staff: {
-        width: 335,
+        gap: 10,
         alignItems: "center",
         paddingBottom: 10
     }
