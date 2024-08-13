@@ -1,287 +1,284 @@
-import { Ionicons } from '@expo/vector-icons'
-import React, { useRef, useState } from 'react'
-import { Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import {Ionicons} from '@expo/vector-icons'
+import React, {useRef, useState} from 'react'
+import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
 
 const data = [
-	{name: "Ramaswamy Pillai", number: "+60 11 11381008", role: "Rider", availability: ['M', 'Tu', 'W', 'Th', 'F']},
-	{name: "Teja Singh", number: "+60 11 11343221", role: "Rider", availability: ['M', 'W', 'Sa', 'Su']}
+    {name: "Ramaswamy Pillai", number: "+60 11 11381008", role: "Rider", availability: ['M', 'Tu', 'W', 'Th', 'F']},
+    {name: "Teja Singh", number: "+60 11 11343221", role: "Rider", availability: ['M', 'W', 'Sa', 'Su']}
 ]
 
 export default function StaffManagement() {
-	const [modalVisible, setModalVisible] = useState(false)
-	const [selectedID, setSelectedID] = useState();
-	
-	const backgroundColor = useRef(new Animated.Value(0)).current
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selectedID, setSelectedID] = useState();
 
-	const interpolatedColor = backgroundColor.interpolate({
-		inputRange: [0, 1],
-		outputRange: ['#ffffff', '#cccccc'],
-  	})
+    const backgroundColor = useRef(new Animated.Value(0)).current
 
-	function Menu() {
-		const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
-		const [nameError, setNameError] = useState();
+    const interpolatedColor = backgroundColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['#ffffff', '#cccccc'],
+    })
 
-		const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
-		const [numberError, setNumberError] = useState();
+    function Menu() {
+        const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
+        const [nameError, setNameError] = useState();
 
-		const [newRole, setNewRole] = useState(data[selectedID]?.role ?? "");
-		const [roleError, setRoleError] = useState();
+        const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
+        const [numberError, setNumberError] = useState();
 
-		const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? []);
+        const [newRole, setNewRole] = useState(data[selectedID]?.role ?? "");
+        const [roleError, setRoleError] = useState();
 
-		function toggleDayAvailability(day) {
-			if(newAvailability.includes(day)) {
-				setNewAvailability(newAvailability.filter((item) => item !== day))
-			} else {
-				setNewAvailability([...newAvailability, day])
-			}
-		}
+        const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? []);
 
-		function submit() {
-			setNameError(!newName && "Must enter a name")
-			setNumberError(!newNumber && "Must enter a number")
-			setRoleError(!newRole && "Must enter a role")
-			if(!newName || !newNumber || !newRole) return
+        function toggleDayAvailability(day) {
+            if (newAvailability.includes(day)) {
+                setNewAvailability(newAvailability.filter((item) => item !== day))
+            } else {
+                setNewAvailability([...newAvailability, day])
+            }
+        }
 
-			newValue = {name: newName, number: newNumber, role: newRole, availability: newAvailability}
+        function submit() {
+            setNameError(!newName && "Must enter a name")
+            setNumberError(!newNumber && "Must enter a number")
+            setRoleError(!newRole && "Must enter a role")
+            if (!newName || !newNumber || !newRole) return
 
-			if(selectedID === undefined) {
-				data.push(newValue)
-			} else {
-				data[selectedID] = newValue
-			}
+            const newValue = {name: newName, number: newNumber, role: newRole, availability: newAvailability}
 
-			closeModal()
-		}
+            if (selectedID === undefined) {
+                data.push(newValue)
+            } else {
+                data[selectedID] = newValue
+            }
 
-		const paddingBottom = useRef(new Animated.Value(40)).current
-		const slideUp = () => {
-			Animated.timing(paddingBottom, {
-				toValue: 340,
-				duration: 250,
-				useNativeDriver: false
-			}).start()
-		}
-		const slideDown = () => {
-			Animated.timing(paddingBottom, {
-				toValue: 40,
-				duration: 250,
-				useNativeDriver: false
-			}).start()			
-		}
+            closeModal()
+        }
 
-		const styles = StyleSheet.create({
-			modal: {
-				width: "100%",
-				gap: 15,
-				padding: 40,
-				backgroundColor: "white",
-				borderRadius: 10,
-			},
-			availability: {
-				width: "100%",
-				gap: 5
-			},
-			availabilityText: {
-				fontWeight: "600",
-				fontSize: 16				
-			}, 
-			availabilityCircles: {
-				flexDirection: "row",
-				justifyContent: "space-between",
-				gap: 5
-			},
-			availabilityCircle: {
-				width: 40,
-				height: 40,
-				borderRadius: 20,
-				borderWidth: 1,
-				justifyContent: "center",
-				alignItems: "center"
-			},
-			availabilityCircleText: {
-				fontSize: 16
-			},
-			buttons: {
-				flexDirection: "row",
-				gap: 10
-			}
-		})
-		
-		return (
-			<Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal} >
+        const paddingBottom = useRef(new Animated.Value(40)).current
+        const slideUp = () => {
+            Animated.timing(paddingBottom, {
+                toValue: 340,
+                duration: 250,
+                useNativeDriver: false
+            }).start()
+        }
+        const slideDown = () => {
+            Animated.timing(paddingBottom, {
+                toValue: 40,
+                duration: 250,
+                useNativeDriver: false
+            }).start()
+        }
 
-				<Pressable style={{flex: 1}} onPress={closeModal} transparent={true} />
+        const styles = StyleSheet.create({
+            modal: {
+                width: "100%",
+                gap: 15,
+                padding: 40,
+                backgroundColor: "white",
+                borderRadius: 10,
+            },
+            availability: {
+                width: "100%",
+                gap: 5
+            },
+            availabilityText: {
+                fontWeight: "600",
+                fontSize: 16
+            },
+            availabilityCircles: {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: 5
+            },
+            availabilityCircle: {
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center"
+            },
+            availabilityCircleText: {
+                fontSize: 16
+            },
+            buttons: {
+                flexDirection: "row",
+                gap: 10
+            }
+        })
 
-				<TouchableWithoutFeedback onPress={() => {
-					Keyboard.dismiss()
-					slideDown()
-				}}>
+        return (
+            <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
+                <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
 
-					<Animated.View style={[styles.modal, {paddingBottom: paddingBottom}]}>
-						<InputField 
-							label={"Name"} 
-							placeholder={"Enter Name Here"} 
-							onPress={slideUp} 
-							value={newName} 
-							onChangeText={(text) => setNewName(text)} 
-							error={nameError} 
-						/>
-						<InputField 
-							label={"Number"} 
-							placeholder={"Enter Phone Number Here"} 
-							onPress={slideUp} 
-							keyboardType={"phone-pad"}
-							value={newNumber} 
-							onChangeText={(text) => setNewNumber(text)} 
-							error={numberError} 
-						/>
-						<InputField 
-							label={"Role"} 
-							placeholder={"Enter Role Here"} 
-							onPress={slideUp} 
-							value={newRole} 
-							onChangeText={(text) => setNewRole(text)} 
-							error={roleError} 
-						/>
+                <TouchableWithoutFeedback onPress={() => {
+                    Keyboard.dismiss()
+                    slideDown()
+                }}>
 
-						<View style={styles.availability}>
-							<Text style={styles.availabilityText}>Availability</Text>
-							<View style={styles.availabilityCircles}>
-								{['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => {
-									daySelected = newAvailability.includes(day)
-									return (
-										<Pressable style={[styles.availabilityCircle, daySelected && {backgroundColor: "black"}]} key={day} onPress={() => toggleDayAvailability(day)}>
-											<Text style={[styles.availabilityCircleText, daySelected && {color: "white"}]}>{day}</Text>
-										</Pressable>									
-									)
-								})}
-							</View>
-						</View>
+                    <Animated.View style={[styles.modal, {paddingBottom: paddingBottom}]}>
+                        <InputField
+                            label={"Name"}
+                            placeholder={"Enter Name Here"}
+                            onPress={slideUp}
+                            value={newName}
+                            onChangeText={(text) => setNewName(text)}
+                            error={nameError}
+                        />
+                        <InputField
+                            label={"Number"}
+                            placeholder={"Enter Phone Number Here"}
+                            onPress={slideUp}
+                            keyboardType={"phone-pad"}
+                            value={newNumber}
+                            onChangeText={(text) => setNewNumber(text)}
+                            error={numberError}
+                        />
+                        <InputField
+                            label={"Role"}
+                            placeholder={"Enter Role Here"}
+                            onPress={slideUp}
+                            value={newRole}
+                            onChangeText={(text) => setNewRole(text)}
+                            error={roleError}
+                        />
 
-						<View style={styles.buttons}>
-							<Button text={"Submit"} dark={true} width={100} height={50} onPress={submit} />
-							<Button text={"Cancel"} dark={false} width={100} height={50} onPress={closeModal} />
-						</View>
-					</Animated.View>
+                        <View style={styles.availability}>
+                            <Text style={styles.availabilityText}>Availability</Text>
+                            <View style={styles.availabilityCircles}>
+                                {['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => {
+                                    const daySelected = newAvailability.includes(day)
+                                    return (
+                                        <Pressable style={[styles.availabilityCircle, daySelected && {backgroundColor: "black"}]} key={day}
+                                                   onPress={() => toggleDayAvailability(day)}>
+                                            <Text style={[styles.availabilityCircleText, daySelected && {color: "white"}]}>{day}</Text>
+                                        </Pressable>
+                                    )
+                                })}
+                            </View>
+                        </View>
 
-				</TouchableWithoutFeedback>
+                        <View style={styles.buttons}>
+                            <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
+                            <Button text={"Cancel"} dark={false} width={100} height={50} onPress={closeModal}/>
+                        </View>
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+            </Modal>
+        )
+    }
 
-			</Modal>
-		)
-	}
+    function Worker({worker: {name, number, role, availability}, ...restProps}) {
+        const styles = StyleSheet.create({
+            worker: {
+                width: "100%",
+                height: 100,
+                padding: 10,
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingLeft: 20,
+                marginBottom: 10
+            },
+            name: {
+                fontSize: 24,
+                fontWeight: "600"
+            },
+            bottom: {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 5
+            },
+            circles: {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                gap: 5
+            },
+            circle: {
+                width: 25,
+                height: 25,
+                borderRadius: 20,
+                borderWidth: 1,
+                justifyContent: "center",
+                alignItems: "center"
+            }
+        })
 
-	function Worker({worker: {name, number, role, availability}, ...restProps}) {
+        return (
+            <Pressable style={styles.worker} {...restProps}>
+                <Text style={styles.name}>{name}</Text>
+                <Text>{number}</Text>
+                <View style={styles.bottom}>
+                    <View style={styles.circles}>
+                        {availability.map(day => (
+                            <View style={styles.circle} key={day}>
+                                <Text>{day}</Text>
+                            </View>
+                        ))}
+                    </View>
+                    <Text>{role}</Text>
+                </View>
+            </Pressable>
+        )
+    }
 
-		const styles = StyleSheet.create({
-			worker: {
-				width: "100%",
-				height: 100,
-				padding: 10,
-				borderWidth: 1,
-				borderRadius: 10,
-				paddingLeft: 20,
-				marginBottom: 10
-			},
-			name: {
-				fontSize: 24,
-				fontWeight: "600"
-			},
-			bottom: {
-				flexDirection: "row",
-				justifyContent: "space-between",
-				alignItems: "center",
-				marginTop: 5
-			},
-			circles: {
-				flexDirection: "row",
-				justifyContent: "space-between",
-				gap: 5
-			},
-			circle: {
-				width: 25,
-				height: 25,
-				borderRadius: 20,
-				borderWidth: 1,
-				justifyContent: "center",
-				alignItems: "center"
-			}
-		})
+    function openModal(ID) {
+        setSelectedID(ID)
+        setModalVisible(true)
 
-		return (
-			<Pressable style={styles.worker} {...restProps}>
-				<Text style={styles.name}>{name}</Text>
-				<Text>{number}</Text>
-				<View style={styles.bottom}>
-					<View style={styles.circles}>
-						{availability.map(day => (
-							<View style={styles.circle} key={day}>
-								<Text>{day}</Text>
-							</View>
-						))}
-					</View>
-					<Text>{role}</Text>
-				</View>
-			</Pressable>
-		)
-	}
+        Animated.timing(backgroundColor, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: false,
+        }).start()
+    }
 
-	function openModal(ID) {
-		setSelectedID(ID)
-		setModalVisible(true)
-		
-		Animated.timing(backgroundColor, {
-			toValue: 1,
-			duration: 500,
-			useNativeDriver: false,
-		}).start()
-	}
+    function closeModal() {
+        setSelectedID(null)
+        setModalVisible(false)
 
-	function closeModal() {
-		setSelectedID(null)
-		setModalVisible(false)
+        Animated.timing(backgroundColor, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: false,
+        }).start()
+    }
 
-		Animated.timing(backgroundColor, {
-			toValue: 0,
-			duration: 500,
-			useNativeDriver: false,
-		}).start()
-	}
+    return (
+        <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
+            <Header label={"Staff"}/>
 
-	return (
-			<Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-				<Header label={"Staff"} />
+            <ScrollView contentContainerStyle={styles.staff}>
+                {data.map((item, index) =>
+                    <Worker key={index} worker={item} onPress={() => openModal(index)}/>
+                )}
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
+            </ScrollView>
 
-				<ScrollView contentContainerStyle={styles.staff}>
-					{ data.map((item, index) => 
-						<Worker key={index} worker={item} onPress={() => openModal(index)} />
-					)}
-					<Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()} />
-				</ScrollView>
-
-				<BottomBar />
-				<Menu />
-			</Animated.View>
-	)
+            <BottomBar/>
+            <Menu/>
+        </Animated.View>
+    )
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		paddingTop: 60,
-		paddingBottom: 80,
-		gap: 20,
-		backgroundColor: "white"
-	},
-	staff: {
-		width: 335,
-		alignItems: "center",
-		paddingBottom: 10
-	}
+    container: {
+        flex: 1,
+        alignItems: "center",
+        paddingTop: 60,
+        paddingBottom: 80,
+        gap: 20,
+        backgroundColor: "white"
+    },
+    staff: {
+        width: 335,
+        alignItems: "center",
+        paddingBottom: 10
+    }
 })
