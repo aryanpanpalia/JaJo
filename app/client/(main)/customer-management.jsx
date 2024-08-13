@@ -72,10 +72,11 @@ export default function CustomerManagement() {
         const styles = StyleSheet.create({
             modal: {
                 width: "100%",
-                gap: 15,
-                padding: 40,
                 backgroundColor: "white",
                 borderRadius: 10,
+                paddingHorizontal: 25,
+                paddingVertical: 50,
+                gap: 15
             },
             availability: {
                 width: "100%",
@@ -100,10 +101,6 @@ export default function CustomerManagement() {
             },
             availabilityCircleText: {
                 fontSize: 16
-            },
-            buttons: {
-                flexDirection: "row",
-                gap: 10
             }
         })
 
@@ -150,10 +147,7 @@ export default function CustomerManagement() {
                             onChangeText={(text) => setNewAddress(text)}
                         />
 
-                        <View style={styles.buttons}>
-                            <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
-                            <Button text={"Cancel"} dark={false} width={100} height={50} onPress={closeModal}/>
-                        </View>
+                        <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </Modal>
@@ -164,16 +158,13 @@ export default function CustomerManagement() {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
-                height: 100,
-                padding: 10,
+                padding: 15,
                 borderWidth: 1,
                 borderRadius: 10,
-                paddingLeft: 20,
-                marginBottom: 10,
-                justifyContent: "center"
+                gap: 5
             },
             name: {
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: "600"
             },
         })
@@ -212,7 +203,7 @@ export default function CustomerManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Customers"}/>
+            <Header label={"Customers"} style={styles.header}/>
 
             <ScrollView contentContainerStyle={styles.customers}>
                 {data.map((item, index) =>
@@ -230,14 +221,17 @@ export default function CustomerManagement() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
         paddingTop: 60,
         paddingBottom: 80,
+        paddingHorizontal: 25,
         gap: 20,
         backgroundColor: "white"
     },
+    header: {
+        width: "100%"
+    },
     customers: {
-        width: 335,
+        gap: 10,
         alignItems: "center",
         paddingBottom: 10
     }
