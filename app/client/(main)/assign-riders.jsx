@@ -77,19 +77,22 @@ export default function AssignRiders() {
                 width: "100%",
                 backgroundColor: "white",
                 borderRadius: 10,
-                padding: 40,
-                gap: 10,
+                paddingHorizontal: 25,
+                paddingVertical: 50,
+                gap: 15,
                 height: 750
             },
             name: {
                 fontSize: 24,
                 fontWeight: "600"
             },
+            selectedRiders: {
+                gap: 5
+            },
             selectedRider: {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 10,
-                marginBottom: 5
             },
             selectedRiderName: {
                 fontSize: 18
@@ -132,13 +135,12 @@ export default function AssignRiders() {
 
         return (
             <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
-
                 <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
 
                 <View style={styles.modal}>
                     <Text style={styles.name}>{data[selectedID].name}</Text>
 
-                    <View>
+                    <View style={styles.selectedRiders}>
                         {selectedRiders.map((rider, index) => <SelectedRider rider={rider} key={index}/>)}
                     </View>
 
@@ -160,10 +162,8 @@ export default function AssignRiders() {
                         </View>
                     }
 
-                    <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
-
+                    <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
                 </View>
-
             </Modal>
         )
     }
@@ -174,18 +174,17 @@ export default function AssignRiders() {
                 width: "100%",
                 padding: 10,
                 borderWidth: 1,
-                borderRadius: 5,
+                borderRadius: 10,
                 gap: 5,
                 marginBottom: 10,
             },
             name: {
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: "600"
             },
             rider: {
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
             },
         })
 
@@ -211,7 +210,7 @@ export default function AssignRiders() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Riders"}/>
+            <Header label={"Riders"} style={styles.header}/>
 
             <ScrollView contentContainerStyle={styles.locations}>
                 {data.map((item, index) => (
@@ -220,6 +219,7 @@ export default function AssignRiders() {
             </ScrollView>
 
             <BottomBar selected={"rider"}/>
+
             <Menu/>
         </Animated.View>
     )
@@ -228,14 +228,16 @@ export default function AssignRiders() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        paddingTop: 60,
-        paddingBottom: 85,
         gap: 20,
+        paddingTop: 60,
+        paddingBottom: 80,
+        paddingHorizontal: 25,
         backgroundColor: "white"
     },
+    header: {
+        width: "100%"
+    },
     locations: {
-        width: 335,
         alignItems: "center",
         paddingBottom: 10
     }
