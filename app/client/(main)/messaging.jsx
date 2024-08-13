@@ -25,23 +25,35 @@ export default function Messaging() {
 
     return (
         <View style={styles.container}>
-            <Header label={"Messaging"}/>
+            <Header label={"Messaging"} style={styles.header}/>
 
             <View style={styles.selector}>
-                <NavigationButton text={"To Location"} type={"left"} width={"49%"} height={30} selected={selected === "locations"} onPress={() => setSelected("locations")}/>
-                <NavigationButton text={"To Staff"} type={"right"} width={"49%"} height={30} selected={selected === "staff"} onPress={() => setSelected("staff")}/>
+                <NavigationButton
+                    text={"To Location"}
+                    type={"left"}
+                    style={styles.navigationButton}
+                    selected={selected === "locations"}
+                    onPress={() => setSelected("locations")}
+                />
+                <NavigationButton
+                    text={"To Staff"}
+                    type={"right"}
+                    style={styles.navigationButton}
+                    selected={selected === "staff"}
+                    onPress={() => setSelected("staff")}
+                />
             </View>
 
-            <ScrollView style={styles.items}>
+            <ScrollView>
                 <Item name={"All"} href={"/client/messages/" + selected}/>
                 {
                     selected === "locations" ? (
                         data.locations.map((location, index) => (
-                            <Item key={index} name={location} href={"/client/messages/locations/" + index} />
+                            <Item key={index} name={location} href={"/client/messages/locations/" + index}/>
                         ))
                     ) : (
                         data.staff.map((worker, index) => (
-                            <Item key={index} name={worker} href={"/client/messages/staff/" + index} />
+                            <Item key={index} name={worker} href={"/client/messages/staff/" + index}/>
                         ))
                     )
                 }
@@ -55,30 +67,32 @@ export default function Messaging() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        paddingTop: 60,
-        paddingBottom: 85,
         gap: 20,
+        paddingTop: 60,
+        paddingBottom: 80,
+        paddingHorizontal: 25,
         backgroundColor: "white"
     },
-    selector: {
-        width: 335,
-        flexDirection: "row",
-        justifyContent: "space-between",
+    header: {
+        width: "100%"
     },
-    items: {
-        width: 335
+    selector: {
+        flexDirection: "row",
+        gap: 5
+    },
+    navigationButton: {
+        flex: 1,
+        height: 30
     },
     item: {
-        width: "100%",
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 10,
         justifyContent: "center",
         padding: 10,
         marginBottom: 10
     },
     text: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "600",
     }
 })
