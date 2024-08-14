@@ -4,6 +4,7 @@ import InputField from "../../components/InputField";
 import Button from "../../components/Button";
 import {Link, router} from "expo-router";
 import {supabase} from "../../lib/supabase"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LogIn() {
     const [number, setNumber] = useState()
@@ -22,7 +23,7 @@ export default function LogIn() {
 
         setLoading(true)
 
-        const {user, error} = await supabase.auth.signInWithPassword({
+        const {data: {user}, error} = await supabase.auth.signInWithPassword({
             phone: number,
             password: password,
         })
@@ -34,10 +35,22 @@ export default function LogIn() {
             setPasswordError("Invalid Login Credentials")
             console.log(error)
         } else {
-            const {data: {user}} = await supabase.auth.getUser()
             const role = user.user_metadata.role
 
             if (role === "Client") {
+                const {data: {id}, error} = await supabase
+                    .from('clients')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .single()
+
+                if (error) {
+                    console.log(error)
+                    return
+                }
+
+                await AsyncStorage.setItem("clientID", id.toString())
+
                 router.replace("/client/dashboard")
             } else if (role === "Rider") {
                 router.replace("/rider/select-client")

@@ -5,6 +5,7 @@ import Button from '../../components/Button'
 import InputField from '../../components/InputField'
 import {supabase} from "../../lib/supabase"
 import {router} from "expo-router"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /*
     https://medium.com/@nickopops/keyboardavoidingview-not-working-properly-c413c0a200d4
@@ -83,6 +84,19 @@ export default function SignUp() {
             const role = user.user_metadata.role
 
             if (role === "Client") {
+                const {data: {id}, error} = await supabase
+                    .from('clients')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .single()
+
+                if (error) {
+                    console.log(error)
+                    return
+                }
+
+                await AsyncStorage.setItem("clientID", id.toString())
+
                 router.replace("/client/dashboard")
             } else if (role === "Rider") {
                 router.replace("/rider/select-client")
