@@ -4,10 +4,21 @@ import {Drawer} from 'expo-router/drawer';
 import {StyleSheet} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {MaterialIcons} from '@expo/vector-icons';
+import {supabase} from "../../../lib/supabase";
 
 function CustomDrawerContent(props) {
+    async function logout() {
+        const {error} = await supabase.auth.signOut()
+
+        if(error) {
+            console.log(error)
+        } else {
+            router.replace("/auth/login")
+        }
+    }
+
     return (
-        <DrawerContentScrollView style={styles.container} {...props}>
+        <DrawerContentScrollView contentContainerStyle={styles.container} {...props}>
             <DrawerItem
                 label={"Product Management"}
                 onPress={() => router.push("/client/product-management")}
@@ -42,6 +53,12 @@ function CustomDrawerContent(props) {
                 label={"Invoice"}
                 onPress={() => router.push("/client/invoice")}
                 icon={() => <MaterialIcons name="receipt" size={24} color="black"/>}
+                labelStyle={styles.label}
+            />
+            <DrawerItem
+                label={"Log Out"}
+                onPress={logout}
+                icon={() => <MaterialIcons name="logout" size={24} color="black"/>}
                 labelStyle={styles.label}
             />
         </DrawerContentScrollView>
