@@ -1,10 +1,10 @@
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native"
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import React, { useState } from 'react'
+import {Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native"
+import {MaterialCommunityIcons} from '@expo/vector-icons'
+import React, {useState} from 'react'
 import Button from '../../components/Button'
 import InputField from '../../components/InputField'
-import { supabase } from "../../lib/supabase"
-import { router } from "expo-router"
+import {supabase} from "../../lib/supabase"
+import {router} from "expo-router"
 
 /*
     https://medium.com/@nickopops/keyboardavoidingview-not-working-properly-c413c0a200d4
@@ -17,13 +17,13 @@ export default function SignUp() {
 
     const [clientName, setClientName] = useState();
     const [clientNameError, setClientNameError] = useState(null);
-    
+
     const [number, setNumber] = useState();
     const [numberError, setNumberError] = useState(null)
-    
+
     const [password, setPassword] = useState();
     const [passwordError, setPasswordError] = useState(null);
-    
+
     const [confirmPassword, setConfirmPassword] = useState();
     const [confirmPasswordError, setConfirmPasswordError] = useState(null);
 
@@ -37,11 +37,11 @@ export default function SignUp() {
         setConfirmPasswordError(password !== confirmPassword ? "Passwords do not match" : null)
         setClientNameError(role === "Client" && !clientName ? "Must provide Client Name" : null)
 
-        if(!number || !password || password.length < 6 || password !== confirmPassword || role === "Client" && !clientName) return
+        if (!number || !password || password.length < 6 || password !== confirmPassword || role === "Client" && !clientName) return
 
         setLoading(true)
 
-        const { data, error } = await supabase.auth.signUp({
+        const {data, error} = await supabase.auth.signUp({
             phone: number,
             password: password,
             options: {
@@ -53,22 +53,22 @@ export default function SignUp() {
             }
         })
 
-        if(error) {
+        if (error) {
             setNumberError("Invalid. Use only numbers and include country code")
             console.log(error)
         } else {
             setWaitingForOTP(true)
         }
-        
+
         setLoading(false)
     }
 
     async function verifyOTP() {
-        if(OTP.length !== 6) return
-        
+        if (OTP.length !== 6) return
+
         setLoading(true)
 
-        const { data: { session }, error } = await supabase.auth.verifyOtp({
+        const {data: {session}, error} = await supabase.auth.verifyOtp({
             phone: number,
             token: OTP,
             type: 'sms',
@@ -76,15 +76,15 @@ export default function SignUp() {
 
         setLoading(false)
 
-        if(error) {
+        if (error) {
             console.log(error)
         } else {
-            const { data: { user } } = await supabase.auth.getUser()
+            const {data: {user}} = await supabase.auth.getUser()
             const role = user.user_metadata.role
 
-            if(role === "Client") {
+            if (role === "Client") {
                 router.replace("/client/dashboard")
-            } else if(role === "Rider") {
+            } else if (role === "Rider") {
                 router.replace("/rider/select-client")
             } else {
                 console.log("Attempting to login Customer. Functionality not implemented yet.")
@@ -93,12 +93,12 @@ export default function SignUp() {
     }
 
     return !waitingForOTP ? (
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-			<KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
                 <View style={styles.header}>
                     <Pressable style={styles.chevron} onPress={router.back}>
-                        <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
                     </Pressable>
                     <Text style={styles.headerText}>JaJo</Text>
                 </View>
@@ -107,7 +107,7 @@ export default function SignUp() {
                     <Text style={styles.mainInformationText}>Register New Account</Text>
                     <Text>Fill in the information below to register!</Text>
                 </View>
-                
+
                 <View style={styles.registrationForm}>
                     <View style={styles.selectRole}>
                         <Text style={styles.selectRoleText}>Select Role</Text>
@@ -118,26 +118,57 @@ export default function SignUp() {
                         </View>
                     </View>
 
-                    <InputField label={"Name"} placeholder={"Enter Name Here"} width={335} onChangeText={(text) => setName(text)}/>
-                    {role === "Client" && <InputField label={"Client Name"} placeholder={"Enter Client Name Here"} width={335} onChangeText={(text) => setClientName(text)} error={clientNameError}/>}
-                    <InputField label={"Phone Number"} placeholder={"Enter Phone Number Here"} width={335} onChangeText={(text) => setNumber(text)} error={numberError} keyboardType="phone-pad"/>
-                    <InputField label={"Password"} placeholder={"Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setPassword(text)} error={passwordError}/>
-                    <InputField label={"Confirm Password"} placeholder={"Re-Enter Password Here"} secureTextEntry width={335} onChangeText={(text) => setConfirmPassword(text)} error={confirmPasswordError}/>
+                    <InputField
+                        label={"Name"}
+                        placeholder={"Enter Name Here"}
+                        width={335}
+                        onChangeText={setName}
+                    />
+                    {role === "Client" && <InputField
+                        label={"Client Name"}
+                        placeholder={"Enter Client Name Here"}
+                        width={335}
+                        onChangeText={setClientName}
+                        error={clientNameError}
+                    />}
+                    <InputField
+                        label={"Phone Number"}
+                        placeholder={"Enter Phone Number Here"}
+                        width={335}
+                        onChangeText={setNumber}
+                        error={numberError}
+                        keyboardType="phone-pad"
+                    />
+                    <InputField
+                        label={"Password"}
+                        placeholder={"Enter Password Here"}
+                        secureTextEntry width={335}
+                        onChangeText={setPassword}
+                        error={passwordError}
+                    />
+                    <InputField
+                        label={"Confirm Password"}
+                        placeholder={"Re-Enter Password Here"}
+                        secureTextEntry
+                        width={335}
+                        onChangeText={setConfirmPassword}
+                        error={confirmPasswordError}
+                    />
                 </View>
 
                 <Button text={"Next"} width={335} height={50} dark={true} disabled={loading} onPress={sendOTP}/>
 
-                <View style={{flex: 1}} />
+                <View style={{flex: 1}}/>
 
-			</KeyboardAvoidingView>
-		</TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     ) : (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-                
+
                 <View style={styles.header}>
                     <Pressable style={styles.chevron} onPress={() => setWaitingForOTP(false)}>
-                        <MaterialCommunityIcons name="chevron-left" size={30} color="black" />
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
                     </Pressable>
                     <Text style={styles.headerText}>JaJo</Text>
                 </View>
@@ -147,11 +178,11 @@ export default function SignUp() {
                     <Text>Enter the 6-digit code we just sent to you</Text>
                 </View>
 
-                <InputField label={"OTP"} placeholder={"Enter OTP Here"} width={335} keyboardType={"numeric"} maxLength={6} onChangeText={(text) => setOTP(text)} />
-                
-                <Button text={"Sign Up"} width={335} height={50} dark={true} disabled={loading} onPress={verifyOTP} />
-                
-                <View style={{flex: 1}} />
+                <InputField label={"OTP"} placeholder={"Enter OTP Here"} width={335} keyboardType={"numeric"} maxLength={6} onChangeText={(text) => setOTP(text)}/>
+
+                <Button text={"Sign Up"} width={335} height={50} dark={true} disabled={loading} onPress={verifyOTP}/>
+
+                <View style={{flex: 1}}/>
 
             </View>
         </TouchableWithoutFeedback>
