@@ -321,7 +321,7 @@ export default function Location() {
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <View style={styles.header}>
-                <Pressable style={styles.chevron} onPress={() => router.navigate("/rider/fulfillment")}>
+                <Pressable style={styles.chevron} onPress={router.back}>
                     <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
                 </Pressable>
                 <Text style={styles.headerText}>{locationName}</Text>

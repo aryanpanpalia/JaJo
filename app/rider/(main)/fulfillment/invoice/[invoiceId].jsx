@@ -25,13 +25,6 @@ export default function Location() {
     const {invoiceId} = useLocalSearchParams()
     const navigation = useNavigation()
 
-    function goBack() {
-        const routes = navigation.getState().routes
-        const lastRoute = routes[routes.length - 1]
-        const backRoute = lastRoute.name.replace('[locationId]', lastRoute.params["locationId"])
-        router.navigate("/rider/" + backRoute)
-    }
-
     function InvoiceDetail({label, value}) {
         const styles = StyleSheet.create({
             invoiceDetail: {
@@ -136,7 +129,7 @@ export default function Location() {
     return (
         <View style={[styles.container]}>
             <View style={styles.header}>
-                <Pressable style={styles.chevron} onPress={goBack}>
+                <Pressable style={styles.chevron} onPress={router.back}>
                     <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
                 </Pressable>
                 <Text style={styles.headerText}>Invoice Details</Text>
