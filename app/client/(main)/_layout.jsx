@@ -51,7 +51,7 @@ function CustomDrawerContent(props) {
 export default function Layout() {
     return (
         <GestureHandlerRootView style={{flex: 1}}>
-            <Drawer screenOptions={{headerShown: false}} drawerContent={CustomDrawerContent}/>
+            <Drawer screenOptions={{headerShown: false}} drawerContent={CustomDrawerContent} backBehavior="history"/>
         </GestureHandlerRootView>
     );
 }
