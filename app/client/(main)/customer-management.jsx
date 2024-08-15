@@ -203,7 +203,7 @@ export default function CustomerManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Customers"} style={styles.header}/>
+            <Header label={"Customers"}/>
 
             <ScrollView contentContainerStyle={styles.customers}>
                 {data.map((item, index) =>
@@ -226,9 +226,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
         gap: 20,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     customers: {
         gap: 10,

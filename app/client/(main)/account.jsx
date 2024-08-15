@@ -13,7 +13,7 @@ const data = {
 export default function Account() {
     return (
         <View style={styles.container}>
-            <Header label={"Account"} style={styles.header}/>
+            <Header label={"Account"}/>
 
             <View>
                 <Pressable style={styles.item} onPress={() => router.push("/client/update-account-info/name")}>
@@ -45,9 +45,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     item: {
         flexDirection: "row",

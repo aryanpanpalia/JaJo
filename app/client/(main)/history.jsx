@@ -11,7 +11,7 @@ export default function History() {
         <View style={styles.container}>
             <Header label={"History"}/>
 
-            <View style={styles.statisticSelectorContainer}>
+            <View>
                 <ScrollView contentContainerStyle={styles.statisticSelector} horizontal={true} showsHorizontalScrollIndicator={false}>
                     <NavigationButton
                         text="Orders"
@@ -68,14 +68,11 @@ export default function History() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        paddingTop: 60,
-        paddingBottom: 85,
         gap: 20,
+        paddingTop: 60,
+        paddingBottom: 80,
+        paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    statisticSelectorContainer: {
-        width: 335
     },
     statisticSelector: {
         height: 30,
@@ -83,11 +80,9 @@ const styles = StyleSheet.create({
         gap: 5
     },
     history: {
-        width: 335,
         gap: 10
     },
     dummy: {
-        width: 335,
         height: 100,
         backgroundColor: "#d9d9d9",
         borderRadius: 5

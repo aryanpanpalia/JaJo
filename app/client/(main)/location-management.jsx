@@ -244,7 +244,7 @@ export default function LocationManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Locations"} style={styles.header}/>
+            <Header label={"Locations"}/>
 
             <ScrollView contentContainerStyle={styles.locations}>
                 {data.map((item, index) =>
@@ -267,9 +267,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     locations: {
         gap: 10,

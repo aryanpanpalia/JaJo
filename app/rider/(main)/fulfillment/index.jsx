@@ -127,8 +127,8 @@ export default function Fulfillment() {
     }
 
     function LocationInformation({location: {name, startTime, endTime}, onPress}) {
-        const startTimeString = startTime.toLocaleTimeString(undefined,{ hour: '2-digit', minute: '2-digit' })
-        const endTimeString = endTime ? endTime.toLocaleTimeString(undefined,{ hour: '2-digit', minute: '2-digit' }) : "----------"
+        const startTimeString = startTime.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'})
+        const endTimeString = endTime ? endTime.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'}) : "----------"
 
         const durationMS = (endTime ?? new Date()) - startTime
         const durationMinutesTotal = durationMS / 1000 / 60
@@ -178,7 +178,7 @@ export default function Fulfillment() {
     }
 
     function endCurrent() {
-        if(workingLocation) {
+        if (workingLocation) {
             const now = new Date()
 
             const updatedRiderHistory = [...riderHistory]
@@ -196,7 +196,7 @@ export default function Fulfillment() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Fulfillment"} style={styles.header}/>
+            <Header label={"Fulfillment"}/>
 
             <View style={styles.row}>
                 <Button text={workingLocation ? "Started" : "Start New"} dark={!workingLocation} style={styles.button} onPress={startNew}/>
@@ -228,9 +228,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     row: {
         flexDirection: "row",

@@ -243,7 +243,7 @@ export default function StaffManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Staff"} style={styles.header}/>
+            <Header label={"Staff"}/>
 
             <ScrollView contentContainerStyle={styles.staff}>
                 {data.map((item, index) =>
@@ -266,9 +266,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     staff: {
         gap: 10,

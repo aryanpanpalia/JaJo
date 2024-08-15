@@ -24,24 +24,21 @@ export default function Invoice() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        paddingTop: 60,
-        paddingBottom: 85,
         gap: 20,
+        paddingTop: 60,
+        paddingBottom: 80,
+        paddingHorizontal: 25,
         backgroundColor: "white"
     },
     label: {
         fontSize: 18,
         fontWeight: "700",
-        width: 335,
         textAlign: "left"
     },
     invoices: {
-        width: 335,
         gap: 10
     },
     dummy: {
-        width: 335,
         height: 100,
         backgroundColor: "#d9d9d9",
         borderRadius: 5

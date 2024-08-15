@@ -253,7 +253,7 @@ export default function ManageLoad() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Manage Load"} style={styles.header}/>
+            <Header label={"Manage Load"}/>
 
             <View style={styles.row}>
                 <Text style={styles.tripCounterLabel}>Trip Counter</Text>
@@ -300,9 +300,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     row: {
         flexDirection: "row",

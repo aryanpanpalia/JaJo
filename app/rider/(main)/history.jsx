@@ -9,7 +9,7 @@ export default function History() {
 
     return (
         <View style={styles.container}>
-            <Header label={"History"} style={styles.header}/>
+            <Header label={"History"}/>
 
             <View style={styles.statisticSelector}>
                 <NavigationButton
@@ -52,9 +52,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     statisticSelector: {
         flexDirection: "row",

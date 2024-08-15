@@ -127,7 +127,7 @@ export default function Location() {
     }
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <View style={styles.header}>
                 <Pressable style={styles.chevron} onPress={router.back}>
                     <MaterialCommunityIcons name="chevron-left" size={30} color="black"/>
@@ -186,5 +186,4 @@ const styles = StyleSheet.create({
     section: {
         gap: 10
     }
-
 })

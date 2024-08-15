@@ -303,7 +303,7 @@ export default function ProductManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Products"} style={styles.header}/>
+            <Header label={"Products"}/>
 
             <ScrollView contentContainerStyle={styles.products}>
                 {products.map((product, index) =>
@@ -326,9 +326,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     products: {
         gap: 10,

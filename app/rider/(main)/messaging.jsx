@@ -20,7 +20,7 @@ export default function Messaging() {
 
     return (
         <View style={styles.container}>
-            <Header label={"Messaging"} style={styles.header}/>
+            <Header label={"Messaging"}/>
 
             <ScrollView style={styles.items}>
                 {targets.map((target, index) => <Item key={index} name={target} href={"/rider/messages/" + index}/>)}
@@ -39,9 +39,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     item: {
         width: "100%",

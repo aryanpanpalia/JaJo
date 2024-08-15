@@ -210,7 +210,7 @@ export default function AssignRiders() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Riders"} style={styles.header}/>
+            <Header label={"Riders"}/>
 
             <ScrollView contentContainerStyle={styles.locations}>
                 {data.map((item, index) => (
@@ -233,9 +233,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     locations: {
         alignItems: "center",

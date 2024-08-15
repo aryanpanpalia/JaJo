@@ -7,7 +7,7 @@ export default function ProductPricing() {
 
     return (
         <View style={styles.container}>
-            <Header label={"Product Pricing"} style={styles.header}/>
+            <Header label={"Product Pricing"}/>
 
             <Text>Rider Markup is currently not enabled.</Text>
 
@@ -24,9 +24,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     statisticSelector: {
         flexDirection: "row",

@@ -271,7 +271,7 @@ export default function OrderAdministration() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Orders"} style={styles.header}/>
+            <Header label={"Orders"}/>
 
             <View style={styles.cutoff}>
                 <Text style={styles.cutoffLabel}>Cut-Off Time:</Text>
@@ -304,9 +304,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     cutoff: {
         flexDirection: "row",

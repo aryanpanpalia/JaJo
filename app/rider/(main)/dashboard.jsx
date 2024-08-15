@@ -80,7 +80,6 @@ export default function Dashboard() {
                 dropdownData={dropdownData}
                 dropdownValue={timespan}
                 onDropdownChange={item => setTimespan(item.value)}
-                style={styles.header}
             />
 
             <View style={styles.statisticSelector}>
@@ -121,9 +120,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     statisticSelector: {
         flexDirection: "row",

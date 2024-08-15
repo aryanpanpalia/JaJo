@@ -25,7 +25,7 @@ export default function Messaging() {
 
     return (
         <View style={styles.container}>
-            <Header label={"Messaging"} style={styles.header}/>
+            <Header label={"Messaging"}/>
 
             <View style={styles.selector}>
                 <NavigationButton
@@ -72,9 +72,6 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         paddingHorizontal: 25,
         backgroundColor: "white"
-    },
-    header: {
-        width: "100%"
     },
     selector: {
         flexDirection: "row",
