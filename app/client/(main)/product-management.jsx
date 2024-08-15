@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ProductManagement() {
     const [products, setProducts] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
-    const [selectedID, setSelectedID] = useState();
+    const [selectedID, setSelectedID] = useState(null);
 
     const backgroundColor = useRef(new Animated.Value(0)).current
 
@@ -58,7 +58,7 @@ export default function ProductManagement() {
                 availability: newAvailability
             }
 
-            if (selectedID === undefined) {
+            if (selectedID === null) {
                 const {error} = await supabase
                     .from('products')
                     .insert({...productValues})
@@ -309,7 +309,7 @@ export default function ProductManagement() {
                 {products.map((product, index) =>
                     <Product key={index} product={product} onPress={() => openModal(product.id)}/>
                 )}
-                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal(null)}/>
             </ScrollView>
 
             <BottomBar/>
