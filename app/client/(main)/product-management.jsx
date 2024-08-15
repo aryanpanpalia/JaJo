@@ -1,23 +1,15 @@
 import {Ionicons} from '@expo/vector-icons'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
-
-const data = [
-    {name: "Apples", price: 3.99, limit: 200, availability: ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su']},
-    {name: "Bananas", price: 2.99, limit: 100, availability: ['M', 'W']},
-    {name: "Milk", price: 9.99, limit: 25, availability: ['M', 'W', 'F']},
-    {name: "Whole Wheat Flour", price: 19.99, limit: 10, availability: ['M', 'Tu', 'W', 'Th', 'F']},
-    {name: "Paneer", price: 4.99, limit: 50, availability: ['Sa', 'Su']},
-    {name: "Honey", price: 9.99, limit: 50, availability: ['M', 'W', 'F', 'Sa', 'Su']},
-    {name: "Apricots", price: 4.99, limit: 50, availability: ['Sa']},
-    {name: "Papaya", price: 9.99, limit: 50, availability: ['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su']},
-]
+import {supabase} from "../../../lib/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ProductManagement() {
+    const [products, setProducts] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedID, setSelectedID] = useState();
 
@@ -28,41 +20,64 @@ export default function ProductManagement() {
         outputRange: ['#ffffff', '#cccccc'],
     })
 
+    const dayLabels = ["M", "Tu", "W", "Th", "F", "Sa", "Su"]
+    const dayLabelToDay = {"M": "Monday", "Tu": "Tuesday", "W": "Wednesday", "Th": "Thursday", "F": "Friday", "Sa": "Saturday", "Su": "Sunday"}
+
     function Menu() {
-        const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
+        const selected = products.find(product => product.id === selectedID)
+
+        const [newName, setNewName] = useState(selected?.name ?? "");
         const [nameError, setNameError] = useState();
 
-        const [newPrice, setNewPrice] = useState(data[selectedID]?.price.toString() ?? "");
+        const [newPrice, setNewPrice] = useState(selected?.price?.toString() ?? "");
         const [priceError, setPriceError] = useState();
 
-        const [newLimit, setNewLimit] = useState(data[selectedID]?.limit.toString() ?? "");
+        const [newLimit, setNewLimit] = useState(selected?.daily_limit?.toString() ?? "");
         const [limitError, setLimitError] = useState();
 
-        const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? []);
+        const [newAvailability, setNewAvailability] = useState(selected?.availability ?? {
+            "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
+        });
 
         function toggleDayAvailability(day) {
-            if (newAvailability.includes(day)) {
-                setNewAvailability(newAvailability.filter((item) => item !== day))
-            } else {
-                setNewAvailability([...newAvailability, day])
-            }
+            setNewAvailability({...newAvailability, [day]: !newAvailability[day]})
         }
 
-        function submit() {
+        async function submit() {
             setNameError(!newName && "Must enter a name")
             setPriceError(!newPrice && "Must enter a price")
             setLimitError(!newLimit && "Must enter a daily limit")
             if (!newName || !newPrice || !newLimit) return
 
-            const newValue = {name: newName, price: parseFloat(newPrice).toFixed(2), limit: parseInt(newLimit), availability: newAvailability}
-
-            if (selectedID === undefined) {
-                data.push(newValue)
-            } else {
-                data[selectedID] = newValue
+            const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+            const productValues = {
+                client_id: clientID,
+                name: newName,
+                price: parseFloat(newPrice).toFixed(2),
+                daily_limit: parseInt(newLimit),
+                availability: newAvailability
             }
 
-            closeModal()
+            if (selectedID === undefined) {
+                const {error} = await supabase
+                    .from('products')
+                    .insert({...productValues})
+
+                if (error) {
+                    console.log(error)
+                }
+            } else {
+                const {error} = await supabase
+                    .from('products')
+                    .update({id: selectedID, ...productValues})
+                    .eq('id', selectedID)
+
+                if (error) {
+                    console.log(error)
+                }
+            }
+
+            await closeModal()
         }
 
         const paddingBottom = useRef(new Animated.Value(40)).current
@@ -160,12 +175,20 @@ export default function ProductManagement() {
                         <View style={styles.availability}>
                             <Text style={styles.availabilityText}>Availability</Text>
                             <View style={styles.availabilityCircles}>
-                                {['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => {
-                                    const daySelected = newAvailability.includes(day)
+                                {dayLabels.map(dayLabel => {
+                                    const day = dayLabelToDay[dayLabel]
+                                    const daySelected = newAvailability[day]
+
+                                    const circleStyle = [styles.availabilityCircle, daySelected && {backgroundColor: "black"}]
+                                    const textStyle = [styles.availabilityCircleText, daySelected && {color: "white"}]
+
                                     return (
-                                        <Pressable style={[styles.availabilityCircle, daySelected && {backgroundColor: "black"}]} key={day}
-                                                   onPress={() => toggleDayAvailability(day)}>
-                                            <Text style={[styles.availabilityCircleText, daySelected && {color: "white"}]}>{day}</Text>
+                                        <Pressable
+                                            style={circleStyle}
+                                            key={day}
+                                            onPress={() => toggleDayAvailability(day)}
+                                        >
+                                            <Text style={textStyle}>{dayLabel}</Text>
                                         </Pressable>
                                     )
                                 })}
@@ -179,7 +202,7 @@ export default function ProductManagement() {
         )
     }
 
-    function Product({product: {name, price, limit, availability}, ...restProps}) {
+    function Product({product: {name, price, daily_limit, availability}, ...restProps}) {
         const styles = StyleSheet.create({
             product: {
                 width: "100%",
@@ -218,19 +241,24 @@ export default function ProductManagement() {
                 <Text>{price} MYR</Text>
                 <View style={styles.bottom}>
                     <View style={styles.circles}>
-                        {availability.map(day => (
-                            <View style={styles.circle} key={day}>
-                                <Text>{day}</Text>
-                            </View>
-                        ))}
+                        {
+                            dayLabels.map(label => {
+                                const daySelected = availability[dayLabelToDay[label]]
+                                return daySelected && (
+                                    <View style={styles.circle} key={label}>
+                                        <Text>{label}</Text>
+                                    </View>)
+                            })
+                        }
                     </View>
-                    <Text>{limit}</Text>
+                    <Text>{daily_limit}</Text>
                 </View>
             </Pressable>
         )
     }
 
-    function openModal(ID) {
+    async function openModal(ID) {
+        await fetchProducts()
         setSelectedID(ID)
         setModalVisible(true)
 
@@ -241,7 +269,8 @@ export default function ProductManagement() {
         }).start()
     }
 
-    function closeModal() {
+    async function closeModal() {
+        await fetchProducts()
         setSelectedID(null)
         setModalVisible(false)
 
@@ -252,13 +281,33 @@ export default function ProductManagement() {
         }).start()
     }
 
+    async function fetchProducts() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: products, error} = await supabase
+            .from('products')
+            .select('id, name, price, daily_limit, availability')
+            .eq("client_id", clientID)
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setProducts(products)
+        }
+    }
+
+    useEffect(() => {
+        fetchProducts()
+    }, [])
+
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <Header label={"Products"} style={styles.header}/>
 
             <ScrollView contentContainerStyle={styles.products}>
-                {data.map((item, index) =>
-                    <Product key={index} product={item} onPress={() => openModal(index)}/>
+                {products.map((product, index) =>
+                    <Product key={index} product={product} onPress={() => openModal(product.id)}/>
                 )}
                 <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
             </ScrollView>
