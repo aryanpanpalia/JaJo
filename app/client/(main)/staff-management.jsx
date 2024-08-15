@@ -7,8 +7,18 @@ import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
 
 const data = [
-    {name: "Ramaswamy Pillai", number: "+60 11 11381008", role: "Rider", availability: ['M', 'Tu', 'W', 'Th', 'F']},
-    {name: "Teja Singh", number: "+60 11 11343221", role: "Rider", availability: ['M', 'W', 'Sa', 'Su']}
+    {
+        name: "Ramaswamy Pillai",
+        phone: "+60 11 11381008",
+        role: "Rider",
+        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
+    },
+    {
+        name: "Teja Singh",
+        phone: "+60 11 11343221",
+        role: "Rider",
+        availability: {"Monday": true, "Tuesday": false, "Wednesday": true, "Thursday": false, "Friday": false, "Saturday": true, "Sunday": true}
+    }
 ]
 
 export default function StaffManagement() {
@@ -22,33 +32,34 @@ export default function StaffManagement() {
         outputRange: ['#ffffff', '#cccccc'],
     })
 
+    const dayLabels = ["M", "Tu", "W", "Th", "F", "Sa", "Su"]
+    const dayLabelToDay = {"M": "Monday", "Tu": "Tuesday", "W": "Wednesday", "Th": "Thursday", "F": "Friday", "Sa": "Saturday", "Su": "Sunday"}
+
     function Menu() {
         const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
         const [nameError, setNameError] = useState();
 
-        const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
-        const [numberError, setNumberError] = useState();
+        const [newPhone, setNewPhone] = useState(data[selectedID]?.phone ?? "");
+        const [phoneError, setPhoneError] = useState();
 
         const [newRole, setNewRole] = useState(data[selectedID]?.role ?? "");
         const [roleError, setRoleError] = useState();
 
-        const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? []);
+        const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? {
+            "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
+        });
 
         function toggleDayAvailability(day) {
-            if (newAvailability.includes(day)) {
-                setNewAvailability(newAvailability.filter((item) => item !== day))
-            } else {
-                setNewAvailability([...newAvailability, day])
-            }
+            setNewAvailability({...newAvailability, [day]: !newAvailability[day]})
         }
 
         function submit() {
             setNameError(!newName && "Must enter a name")
-            setNumberError(!newNumber && "Must enter a number")
+            setPhoneError(!newPhone && "Must enter a phone number")
             setRoleError(!newRole && "Must enter a role")
-            if (!newName || !newNumber || !newRole) return
+            if (!newName || !newPhone || !newRole) return
 
-            const newValue = {name: newName, number: newNumber, role: newRole, availability: newAvailability}
+            const newValue = {name: newName, phone: newPhone, role: newRole, availability: newAvailability}
 
             if (selectedID === undefined) {
                 data.push(newValue)
@@ -129,13 +140,13 @@ export default function StaffManagement() {
                             error={nameError}
                         />
                         <InputField
-                            label={"Number"}
+                            label={"Phone Number"}
                             placeholder={"Enter Phone Number Here"}
                             onPress={slideUp}
                             keyboardType={"phone-pad"}
-                            value={newNumber}
-                            onChangeText={(text) => setNewNumber(text)}
-                            error={numberError}
+                            value={newPhone}
+                            onChangeText={(text) => setNewPhone(text)}
+                            error={phoneError}
                         />
                         <InputField
                             label={"Role"}
@@ -149,12 +160,20 @@ export default function StaffManagement() {
                         <View style={styles.availability}>
                             <Text style={styles.availabilityText}>Availability</Text>
                             <View style={styles.availabilityCircles}>
-                                {['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => {
-                                    const daySelected = newAvailability.includes(day)
+                                {dayLabels.map(dayLabel => {
+                                    const day = dayLabelToDay[dayLabel]
+                                    const daySelected = newAvailability[day]
+
+                                    const circleStyle = [styles.availabilityCircle, daySelected && {backgroundColor: "black"}]
+                                    const textStyle = [styles.availabilityCircleText, daySelected && {color: "white"}]
+
                                     return (
-                                        <Pressable style={[styles.availabilityCircle, daySelected && {backgroundColor: "black"}]} key={day}
-                                                   onPress={() => toggleDayAvailability(day)}>
-                                            <Text style={[styles.availabilityCircleText, daySelected && {color: "white"}]}>{day}</Text>
+                                        <Pressable
+                                            style={circleStyle}
+                                            key={day}
+                                            onPress={() => toggleDayAvailability(day)}
+                                        >
+                                            <Text style={textStyle}>{dayLabel}</Text>
                                         </Pressable>
                                     )
                                 })}
@@ -168,7 +187,7 @@ export default function StaffManagement() {
         )
     }
 
-    function Worker({worker: {name, number, role, availability}, ...restProps}) {
+    function Worker({worker: {name, phone, role, availability}, ...restProps}) {
         const styles = StyleSheet.create({
             worker: {
                 width: "100%",
@@ -204,14 +223,18 @@ export default function StaffManagement() {
         return (
             <Pressable style={styles.worker} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
-                <Text>{number}</Text>
+                <Text>{phone}</Text>
                 <View style={styles.bottom}>
                     <View style={styles.circles}>
-                        {availability.map(day => (
-                            <View style={styles.circle} key={day}>
-                                <Text>{day}</Text>
-                            </View>
-                        ))}
+                        {
+                            dayLabels.map(label => {
+                                const daySelected = availability[dayLabelToDay[label]]
+                                return daySelected && (
+                                    <View style={styles.circle} key={label}>
+                                        <Text>{label}</Text>
+                                    </View>)
+                            })
+                        }
                     </View>
                     <Text>{role}</Text>
                 </View>
