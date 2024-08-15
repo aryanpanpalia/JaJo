@@ -10,13 +10,11 @@ const data = [
     {
         name: "Ramaswamy Pillai",
         phone: "+60 11 11381008",
-        role: "Rider",
         availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
     },
     {
         name: "Teja Singh",
         phone: "+60 11 11343221",
-        role: "Rider",
         availability: {"Monday": true, "Tuesday": false, "Wednesday": true, "Thursday": false, "Friday": false, "Saturday": true, "Sunday": true}
     }
 ]
@@ -26,7 +24,6 @@ export default function StaffManagement() {
     const [selectedID, setSelectedID] = useState();
 
     const backgroundColor = useRef(new Animated.Value(0)).current
-
     const interpolatedColor = backgroundColor.interpolate({
         inputRange: [0, 1],
         outputRange: ['#ffffff', '#cccccc'],
@@ -37,13 +34,10 @@ export default function StaffManagement() {
 
     function Menu() {
         const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
-        const [nameError, setNameError] = useState();
+        const [nameError, setNameError] = useState("");
 
         const [newPhone, setNewPhone] = useState(data[selectedID]?.phone ?? "");
-        const [phoneError, setPhoneError] = useState();
-
-        const [newRole, setNewRole] = useState(data[selectedID]?.role ?? "");
-        const [roleError, setRoleError] = useState();
+        const [phoneError, setPhoneError] = useState("");
 
         const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? {
             "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
@@ -54,12 +48,11 @@ export default function StaffManagement() {
         }
 
         function submit() {
-            setNameError(!newName && "Must enter a name")
-            setPhoneError(!newPhone && "Must enter a phone number")
-            setRoleError(!newRole && "Must enter a role")
-            if (!newName || !newPhone || !newRole) return
+            setNameError(!newName ? "Must enter a name" : "")
+            setPhoneError(!newPhone ? "Must enter a phone number" : "")
+            if (!newName || !newPhone) return
 
-            const newValue = {name: newName, phone: newPhone, role: newRole, availability: newAvailability}
+            const newValue = {name: newName, phone: newPhone, availability: newAvailability}
 
             if (selectedID === undefined) {
                 data.push(newValue)
@@ -148,14 +141,6 @@ export default function StaffManagement() {
                             onChangeText={(text) => setNewPhone(text)}
                             error={phoneError}
                         />
-                        <InputField
-                            label={"Role"}
-                            placeholder={"Enter Role Here"}
-                            onPress={slideUp}
-                            value={newRole}
-                            onChangeText={(text) => setNewRole(text)}
-                            error={roleError}
-                        />
 
                         <View style={styles.availability}>
                             <Text style={styles.availabilityText}>Availability</Text>
@@ -187,9 +172,9 @@ export default function StaffManagement() {
         )
     }
 
-    function Worker({worker: {name, phone, role, availability}, ...restProps}) {
+    function Rider({rider: {name, phone, availability}, ...restProps}) {
         const styles = StyleSheet.create({
-            worker: {
+            rider: {
                 width: "100%",
                 padding: 15,
                 borderWidth: 1,
@@ -221,7 +206,7 @@ export default function StaffManagement() {
         })
 
         return (
-            <Pressable style={styles.worker} {...restProps}>
+            <Pressable style={styles.rider} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
                 <Text>{phone}</Text>
                 <View style={styles.bottom}>
@@ -236,7 +221,6 @@ export default function StaffManagement() {
                             })
                         }
                     </View>
-                    <Text>{role}</Text>
                 </View>
             </Pressable>
         )
@@ -266,11 +250,11 @@ export default function StaffManagement() {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
-            <Header label={"Staff"}/>
+            <Header label={"Riders"}/>
 
-            <ScrollView contentContainerStyle={styles.staff}>
+            <ScrollView contentContainerStyle={styles.riders}>
                 {data.map((item, index) =>
-                    <Worker key={index} worker={item} onPress={() => openModal(index)}/>
+                    <Rider key={index} rider={item} onPress={() => openModal(index)}/>
                 )}
                 <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
             </ScrollView>
@@ -290,7 +274,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
         backgroundColor: "white"
     },
-    staff: {
+    riders: {
         gap: 10,
         alignItems: "center",
         paddingBottom: 10
