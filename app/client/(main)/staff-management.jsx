@@ -21,7 +21,7 @@ const data = [
 
 export default function StaffManagement() {
     const [modalVisible, setModalVisible] = useState(false)
-    const [selectedID, setSelectedID] = useState();
+    const [selectedID, setSelectedID] = useState(null);
 
     const backgroundColor = useRef(new Animated.Value(0)).current
     const interpolatedColor = backgroundColor.interpolate({
@@ -54,7 +54,7 @@ export default function StaffManagement() {
 
             const newValue = {name: newName, phone: newPhone, availability: newAvailability}
 
-            if (selectedID === undefined) {
+            if (selectedID === null) {
                 data.push(newValue)
             } else {
                 data[selectedID] = newValue
@@ -256,7 +256,7 @@ export default function StaffManagement() {
                 {data.map((item, index) =>
                     <Rider key={index} rider={item} onPress={() => openModal(index)}/>
                 )}
-                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal(null)}/>
             </ScrollView>
 
             <BottomBar/>
