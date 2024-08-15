@@ -27,13 +27,13 @@ export default function ProductManagement() {
         const selected = products.find(product => product.id === selectedID)
 
         const [newName, setNewName] = useState(selected?.name ?? "");
-        const [nameError, setNameError] = useState();
+        const [nameError, setNameError] = useState("");
 
         const [newPrice, setNewPrice] = useState(selected?.price?.toString() ?? "");
-        const [priceError, setPriceError] = useState();
+        const [priceError, setPriceError] = useState("");
 
         const [newLimit, setNewLimit] = useState(selected?.daily_limit?.toString() ?? "");
-        const [limitError, setLimitError] = useState();
+        const [limitError, setLimitError] = useState("");
 
         const [newAvailability, setNewAvailability] = useState(selected?.availability ?? {
             "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
@@ -44,9 +44,9 @@ export default function ProductManagement() {
         }
 
         async function submit() {
-            setNameError(!newName && "Must enter a name")
-            setPriceError(!newPrice && "Must enter a price")
-            setLimitError(!newLimit && "Must enter a daily limit")
+            setNameError(!newName ? "Must enter a name" : "")
+            setPriceError(!newPrice ? "Must enter a price" : "")
+            setLimitError(!newLimit ? "Must enter a daily limit" : "")
             if (!newName || !newPrice || !newLimit) return
 
             const clientID = parseInt(await AsyncStorage.getItem("clientID"))
