@@ -114,6 +114,8 @@ export default function StaffManagement() {
             }
         })
 
+        const disabled = {editable: false, opacity: 0.5}
+
         return (
             <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
                 <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
@@ -131,6 +133,7 @@ export default function StaffManagement() {
                             value={newName}
                             onChangeText={(text) => setNewName(text)}
                             error={nameError}
+                            {...(selectedID !== null && disabled)}
                         />
                         <InputField
                             label={"Phone Number"}
@@ -140,6 +143,7 @@ export default function StaffManagement() {
                             value={newPhone}
                             onChangeText={(text) => setNewPhone(text)}
                             error={phoneError}
+                            {...(selectedID !== null && disabled)}
                         />
 
                         <View style={styles.availability}>
