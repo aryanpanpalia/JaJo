@@ -7,10 +7,10 @@ import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
 
 const data = [
-    {name: "Charan Kumar", number: "+60 11 11381008"},
-    {name: "Krishna Kumar", number: "+60 11 11343221"},
-    {name: "Rajeev Rai", number: "+1 314 159 2653"},
-    {name: "Aryan Panpalia", number: "+1 271 828 1828"},
+    {name: "Charan Kumar", phone: "+60 11 11381008"},
+    {name: "Krishna Kumar", phone: "+60 11 11343221"},
+    {name: "Rajeev Rai", phone: "+1 314 159 2653"},
+    {name: "Aryan Panpalia", phone: "+1 271 828 1828"},
 ]
 
 export default function CustomerManagement() {
@@ -27,15 +27,15 @@ export default function CustomerManagement() {
         const [newName, setNewName] = useState("");
         const [nameError, setNameError] = useState("");
 
-        const [newNumber, setNewNumber] = useState("");
-        const [numberError, setNumberError] = useState("");
+        const [newPhone, setNewPhone] = useState("");
+        const [phoneError, setPhoneError] = useState("");
 
         function submit() {
             setNameError(!newName ? "Must enter a name" : "")
-            setNumberError(!newNumber ? "Must enter a number" : "")
-            if (!newName || !newNumber) return
+            setPhoneError(!newPhone ? "Must enter a phone number" : "")
+            if (!newName || !newPhone) return
 
-            const newValue = {name: newName, number: newNumber}
+            const newValue = {name: newName, phone: newPhone}
             data.push(newValue)
 
             closeModal()
@@ -87,13 +87,13 @@ export default function CustomerManagement() {
                             error={nameError}
                         />
                         <InputField
-                            label={"Number"}
+                            label={"Phone Number"}
                             placeholder={"Enter Phone Number Here"}
                             onPress={slideUp}
                             keyboardType={"phone-pad"}
-                            value={newNumber}
-                            onChangeText={(text) => setNewNumber(text)}
-                            error={numberError}
+                            value={newPhone}
+                            onChangeText={(text) => setNewPhone(text)}
+                            error={phoneError}
                         />
 
                         <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
@@ -103,7 +103,7 @@ export default function CustomerManagement() {
         )
     }
 
-    function Customer({customer: {name, number}}) {
+    function Customer({customer: {name, phone}}) {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
@@ -121,7 +121,7 @@ export default function CustomerManagement() {
         return (
             <View style={styles.customer}>
                 <Text style={styles.name}>{name}</Text>
-                <Text>{number}</Text>
+                <Text>{phone}</Text>
             </View>
         )
     }
