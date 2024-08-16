@@ -1,6 +1,6 @@
 import {Ionicons} from '@expo/vector-icons'
 import React, {useRef, useState} from 'react'
-import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native'
+import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
@@ -15,7 +15,6 @@ const data = [
 
 export default function CustomerManagement() {
     const [modalVisible, setModalVisible] = useState(false)
-    const [selectedID, setSelectedID] = useState();
 
     const backgroundColor = useRef(new Animated.Value(0)).current
 
@@ -25,24 +24,19 @@ export default function CustomerManagement() {
     })
 
     function Menu() {
-        const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
-        const [nameError, setNameError] = useState();
+        const [newName, setNewName] = useState("");
+        const [nameError, setNameError] = useState("");
 
-        const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
-        const [numberError, setNumberError] = useState();
+        const [newNumber, setNewNumber] = useState("");
+        const [numberError, setNumberError] = useState("");
 
         function submit() {
-            setNameError(!newName && "Must enter a name")
-            setNumberError(!newNumber && "Must enter a number")
+            setNameError(!newName ? "Must enter a name" : "")
+            setNumberError(!newNumber ? "Must enter a number" : "")
             if (!newName || !newNumber) return
 
             const newValue = {name: newName, number: newNumber}
-
-            if (selectedID === undefined) {
-                data.push(newValue)
-            } else {
-                data[selectedID] = newValue
-            }
+            data.push(newValue)
 
             closeModal()
         }
@@ -109,7 +103,7 @@ export default function CustomerManagement() {
         )
     }
 
-    function Customer({customer: {name, number}, ...restProps}) {
+    function Customer({customer: {name, number}}) {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
@@ -125,15 +119,14 @@ export default function CustomerManagement() {
         })
 
         return (
-            <Pressable style={styles.customer} {...restProps}>
+            <View style={styles.customer}>
                 <Text style={styles.name}>{name}</Text>
                 <Text>{number}</Text>
-            </Pressable>
+            </View>
         )
     }
 
-    function openModal(ID) {
-        setSelectedID(ID)
+    function openModal() {
         setModalVisible(true)
 
         Animated.timing(backgroundColor, {
@@ -144,7 +137,6 @@ export default function CustomerManagement() {
     }
 
     function closeModal() {
-        setSelectedID(null)
         setModalVisible(false)
 
         Animated.timing(backgroundColor, {
@@ -160,9 +152,9 @@ export default function CustomerManagement() {
 
             <ScrollView contentContainerStyle={styles.customers}>
                 {data.map((item, index) =>
-                    <Customer key={index} customer={item} onPress={() => openModal(index)}/>
+                    <Customer key={index} customer={item}/>
                 )}
-                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={openModal}/>
             </ScrollView>
 
             <BottomBar/>
