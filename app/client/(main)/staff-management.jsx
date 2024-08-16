@@ -1,25 +1,15 @@
 import {Ionicons} from '@expo/vector-icons'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
-
-const data = [
-    {
-        name: "Ramaswamy Pillai",
-        phone: "+60 11 11381008",
-        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
-    },
-    {
-        name: "Teja Singh",
-        phone: "+60 11 11343221",
-        availability: {"Monday": true, "Tuesday": false, "Wednesday": true, "Thursday": false, "Friday": false, "Saturday": true, "Sunday": true}
-    }
-]
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../../lib/supabase";
 
 export default function StaffManagement() {
+    const [riders, setRiders] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedID, setSelectedID] = useState(null);
 
@@ -33,13 +23,12 @@ export default function StaffManagement() {
     const dayLabelToDay = {"M": "Monday", "Tu": "Tuesday", "W": "Wednesday", "Th": "Thursday", "F": "Friday", "Sa": "Saturday", "Su": "Sunday"}
 
     function Menu() {
-        const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
-        const [nameError, setNameError] = useState("");
+        const selected = riders.find(rider => rider.id === selectedID)
 
-        const [newPhone, setNewPhone] = useState(data[selectedID]?.phone ?? "");
+        const [newPhone, setNewPhone] = useState(selected?.phone ?? "");
         const [phoneError, setPhoneError] = useState("");
 
-        const [newAvailability, setNewAvailability] = useState(data[selectedID]?.availability ?? {
+        const [newAvailability, setNewAvailability] = useState(selected?.availability ?? {
             "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
         });
 
@@ -47,20 +36,44 @@ export default function StaffManagement() {
             setNewAvailability({...newAvailability, [day]: !newAvailability[day]})
         }
 
-        function submit() {
-            setNameError(!newName ? "Must enter a name" : "")
+        async function submit() {
             setPhoneError(!newPhone ? "Must enter a phone number" : "")
-            if (!newName || !newPhone) return
+            if (!newPhone) return
 
-            const newValue = {name: newName, phone: newPhone, availability: newAvailability}
+            const clientID = parseInt(await AsyncStorage.getItem("clientID"))
 
             if (selectedID === null) {
-                data.push(newValue)
+                const {data: riderID, error: riderIDError} = await supabase
+                    .rpc('get_rider_id_by_phone', {phone_number: newPhone})
+
+                if (riderIDError) {
+                    console.log(riderIDError)
+                    return
+                }
+                if (riderID === null) {
+                    setPhoneError("Phone number not associated to any Rider")
+                    return
+                }
+
+                const {error: insertError} = await supabase
+                    .from('client_riders')
+                    .insert({client_id: clientID, rider_id: riderID, availability: newAvailability})
+
+                if (insertError) {
+                    console.log(insertError)
+                }
             } else {
-                data[selectedID] = newValue
+                const {error} = await supabase
+                    .from('client_riders')
+                    .update({availability: newAvailability})
+                    .eq('id', selectedID)
+
+                if (error) {
+                    console.log(error)
+                }
             }
 
-            closeModal()
+            await closeModal()
         }
 
         const paddingBottom = useRef(new Animated.Value(40)).current
@@ -114,8 +127,6 @@ export default function StaffManagement() {
             }
         })
 
-        const disabled = {editable: false, opacity: 0.5}
-
         return (
             <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
                 <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
@@ -126,25 +137,24 @@ export default function StaffManagement() {
                 }}>
 
                     <Animated.View style={[styles.modal, {paddingBottom: paddingBottom}]}>
-                        <InputField
-                            label={"Name"}
-                            placeholder={"Enter Name Here"}
-                            onPress={slideUp}
-                            value={newName}
-                            onChangeText={(text) => setNewName(text)}
-                            error={nameError}
-                            {...(selectedID !== null && disabled)}
-                        />
-                        <InputField
-                            label={"Phone Number"}
-                            placeholder={"Enter Phone Number Here"}
-                            onPress={slideUp}
-                            keyboardType={"phone-pad"}
-                            value={newPhone}
-                            onChangeText={(text) => setNewPhone(text)}
-                            error={phoneError}
-                            {...(selectedID !== null && disabled)}
-                        />
+                        {
+                            selected ? (
+                                <>
+                                    <InputField label={"Name"} value={selected.name} editable={false} opacity={0.5}/>
+                                    <InputField label={"Phone Number"} value={selected.phone} editable={false} opacity={0.5}/>
+                                </>
+                            ) : (
+                                <InputField
+                                    label={"Phone Number"}
+                                    placeholder={"Enter Phone Number Here"}
+                                    onPress={slideUp}
+                                    keyboardType={"phone-pad"}
+                                    value={newPhone}
+                                    onChangeText={setNewPhone}
+                                    error={phoneError}
+                                />
+                            )
+                        }
 
                         <View style={styles.availability}>
                             <Text style={styles.availabilityText}>Availability</Text>
@@ -230,7 +240,8 @@ export default function StaffManagement() {
         )
     }
 
-    function openModal(ID) {
+    async function openModal(ID) {
+        await fetchRiders()
         setSelectedID(ID)
         setModalVisible(true)
 
@@ -241,7 +252,8 @@ export default function StaffManagement() {
         }).start()
     }
 
-    function closeModal() {
+    async function closeModal() {
+        await fetchRiders()
         setSelectedID(null)
         setModalVisible(false)
 
@@ -252,13 +264,31 @@ export default function StaffManagement() {
         }).start()
     }
 
+    async function fetchRiders() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: riders, error} = await supabase
+            .rpc('get_client_riders', {p_client_id: clientID})
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setRiders(riders)
+        }
+    }
+
+    useEffect(() => {
+        fetchRiders()
+    }, [])
+
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <Header label={"Riders"}/>
 
             <ScrollView contentContainerStyle={styles.riders}>
-                {data.map((item, index) =>
-                    <Rider key={index} rider={item} onPress={() => openModal(index)}/>
+                {riders.map((rider, index) =>
+                    <Rider key={index} rider={rider} onPress={() => openModal(rider.id)}/>
                 )}
                 <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal(null)}/>
             </ScrollView>
