@@ -1,16 +1,16 @@
 import {Ionicons} from '@expo/vector-icons'
 import React, {useRef, useState} from 'react'
-import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
+import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
 
 const data = [
-    {name: "Charan Kumar", number: "+60 11 11381008", location: "Suasana Sentral", address: null},
-    {name: "Krishna Kumar", number: "+60 11 11343221", location: "The Sentral Residenses", address: null},
-    {name: "Rajeev Rai", number: "+1 314 159 2653", location: "The Ohio State University", address: null},
-    {name: "Aryan Panpalia", number: "+1 271 828 1828", location: "White House", address: "1600 Pennsylvania Avenue"},
+    {name: "Charan Kumar", number: "+60 11 11381008"},
+    {name: "Krishna Kumar", number: "+60 11 11343221"},
+    {name: "Rajeev Rai", number: "+1 314 159 2653"},
+    {name: "Aryan Panpalia", number: "+1 271 828 1828"},
 ]
 
 export default function CustomerManagement() {
@@ -31,18 +31,12 @@ export default function CustomerManagement() {
         const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
         const [numberError, setNumberError] = useState();
 
-        const [newLocation, setNewLocation] = useState(data[selectedID]?.location ?? "");
-        const [locationError, setLocationError] = useState();
-
-        const [newAddress, setNewAddress] = useState(data[selectedID]?.address ?? "");
-
         function submit() {
             setNameError(!newName && "Must enter a name")
             setNumberError(!newNumber && "Must enter a number")
-            setLocationError(!newLocation && "Must enter a location")
-            if (!newName || !newNumber || !newLocation) return
+            if (!newName || !newNumber) return
 
-            const newValue = {name: newName, number: newNumber, location: newLocation, address: newAddress}
+            const newValue = {name: newName, number: newNumber}
 
             if (selectedID === undefined) {
                 data.push(newValue)
@@ -77,30 +71,6 @@ export default function CustomerManagement() {
                 paddingHorizontal: 25,
                 paddingVertical: 50,
                 gap: 15
-            },
-            availability: {
-                width: "100%",
-                gap: 5
-            },
-            availabilityText: {
-                fontWeight: "600",
-                fontSize: 16
-            },
-            availabilityCircles: {
-                flexDirection: "row",
-                justifyContent: "space-between",
-                gap: 5
-            },
-            availabilityCircle: {
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                borderWidth: 1,
-                justifyContent: "center",
-                alignItems: "center"
-            },
-            availabilityCircleText: {
-                fontSize: 16
             }
         })
 
@@ -131,21 +101,6 @@ export default function CustomerManagement() {
                             onChangeText={(text) => setNewNumber(text)}
                             error={numberError}
                         />
-                        <InputField
-                            label={"Location"}
-                            placeholder={"Enter Location Here"}
-                            onPress={slideUp}
-                            value={newLocation}
-                            onChangeText={(text) => setNewLocation(text)}
-                            error={locationError}
-                        />
-                        <InputField
-                            label={"Address (optional)"}
-                            placeholder={"Enter Address Here"}
-                            onPress={slideUp}
-                            value={newAddress}
-                            onChangeText={(text) => setNewAddress(text)}
-                        />
 
                         <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
                     </Animated.View>
@@ -154,7 +109,7 @@ export default function CustomerManagement() {
         )
     }
 
-    function Customer({customer: {name, number, location, address}, ...restProps}) {
+    function Customer({customer: {name, number}, ...restProps}) {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
@@ -173,8 +128,6 @@ export default function CustomerManagement() {
             <Pressable style={styles.customer} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
                 <Text>{number}</Text>
-                {address && <Text>{address}</Text>}
-                <Text>{location}</Text>
             </Pressable>
         )
     }
