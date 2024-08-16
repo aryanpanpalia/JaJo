@@ -31,7 +31,7 @@ const data = [
 
 export default function LocationManagement() {
     const [modalVisible, setModalVisible] = useState(false)
-    const [selectedID, setSelectedID] = useState();
+    const [selectedID, setSelectedID] = useState(null);
 
     const backgroundColor = useRef(new Animated.Value(0)).current
 
@@ -65,7 +65,7 @@ export default function LocationManagement() {
 
             const newValue = {name: newName, homeDelivery: newHomeDelivery, availability: newAvailability}
 
-            if (selectedID === undefined) {
+            if (selectedID === null) {
                 data.push(newValue)
             } else {
                 data[selectedID] = newValue
@@ -272,7 +272,7 @@ export default function LocationManagement() {
                 {data.map((item, index) =>
                     <Location key={index} location={item} onPress={() => openModal(index)}/>
                 )}
-                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal(null)}/>
             </ScrollView>
 
             <BottomBar/>
