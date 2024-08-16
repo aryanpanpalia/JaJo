@@ -1,35 +1,15 @@
 import {Ionicons} from '@expo/vector-icons'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, TouchableWithoutFeedback, View} from 'react-native'
 import BottomBar from '../../../components/client/BottomBar'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
-
-const data = [
-    {
-        name: "Suasana Sentral",
-        homeDelivery: true,
-        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
-    },
-    {
-        name: "The Sentral Residenses",
-        homeDelivery: false,
-        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
-    },
-    {
-        name: "The Edge at Polaris",
-        homeDelivery: true,
-        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
-    },
-    {
-        name: "Olentangy Falls",
-        homeDelivery: false,
-        availability: {"Monday": true, "Tuesday": true, "Wednesday": true, "Thursday": true, "Friday": true, "Saturday": false, "Sunday": false}
-    }
-]
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../../lib/supabase";
 
 export default function LocationManagement() {
+    const [locations, setLocations] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedID, setSelectedID] = useState(null);
 
@@ -44,12 +24,12 @@ export default function LocationManagement() {
     const dayLabelToDay = {"M": "Monday", "Tu": "Tuesday", "W": "Wednesday", "Th": "Thursday", "F": "Friday", "Sa": "Saturday", "Su": "Sunday"}
 
     function Menu() {
-        const selected = data[selectedID]
+        const selected = locations.find(location => location.id === selectedID)
 
         const [newName, setNewName] = useState(selected?.name ?? "");
         const [nameError, setNameError] = useState("");
 
-        const [newHomeDelivery, setNewHomeDelivery] = useState(selected?.homeDelivery ?? false);
+        const [newHomeDelivery, setNewHomeDelivery] = useState(selected?.home_delivery ?? false);
 
         const [newAvailability, setNewAvailability] = useState(selected?.availability ?? {
             "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
@@ -59,16 +39,35 @@ export default function LocationManagement() {
             setNewAvailability({...newAvailability, [day]: !newAvailability[day]})
         }
 
-        function submit() {
+        async function submit() {
             setNameError(!newName ? "Must enter a name" : "")
             if (!newName) return
 
-            const newValue = {name: newName, homeDelivery: newHomeDelivery, availability: newAvailability}
+            const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+            const locationValues = {
+                client_id: clientID,
+                name: newName,
+                home_delivery: newHomeDelivery,
+                availability: newAvailability
+            }
 
             if (selectedID === null) {
-                data.push(newValue)
+                const {error} = await supabase
+                    .from('locations')
+                    .insert(locationValues)
+
+                if (error) {
+                    console.log(error)
+                }
             } else {
-                data[selectedID] = newValue
+                const {error} = await supabase
+                    .from('locations')
+                    .update(locationValues)
+                    .eq('id', selectedID)
+
+                if (error) {
+                    console.log(error)
+                }
             }
 
             closeModal()
@@ -188,7 +187,7 @@ export default function LocationManagement() {
         )
     }
 
-    function Location({location: {name, homeDelivery, availability}, ...restProps}) {
+    function Location({location: {name, home_delivery, availability}, ...restProps}) {
         const styles = StyleSheet.create({
             location: {
                 width: "100%",
@@ -224,7 +223,7 @@ export default function LocationManagement() {
         return (
             <Pressable style={styles.location} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
-                <Text>{homeDelivery ? "Home Delivery" : "Not Home Delivery"}</Text>
+                <Text>{home_delivery ? "Home Delivery" : "Not Home Delivery"}</Text>
                 <View style={styles.bottom}>
                     <View style={styles.circles}>
                         {
@@ -242,7 +241,8 @@ export default function LocationManagement() {
         )
     }
 
-    function openModal(ID) {
+    async function openModal(ID) {
+        await fetchLocations()
         setSelectedID(ID)
         setModalVisible(true)
 
@@ -253,7 +253,8 @@ export default function LocationManagement() {
         }).start()
     }
 
-    function closeModal() {
+    async function closeModal() {
+        await fetchLocations()
         setSelectedID(null)
         setModalVisible(false)
 
@@ -264,13 +265,33 @@ export default function LocationManagement() {
         }).start()
     }
 
+    async function fetchLocations() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: locations, error} = await supabase
+            .from('locations')
+            .select('id, name, home_delivery, availability')
+            .eq('client_id', clientID)
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setLocations(locations)
+        }
+    }
+
+    useEffect(() => {
+        fetchLocations()
+    }, [])
+
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <Header label={"Locations"}/>
 
             <ScrollView contentContainerStyle={styles.locations}>
-                {data.map((item, index) =>
-                    <Location key={index} location={item} onPress={() => openModal(index)}/>
+                {locations.map((location, index) =>
+                    <Location key={index} location={location} onPress={() => openModal(location.id)}/>
                 )}
                 <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal(null)}/>
             </ScrollView>
