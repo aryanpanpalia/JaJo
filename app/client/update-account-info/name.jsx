@@ -1,26 +1,45 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import InputField from "../../../components/InputField";
 import {router} from "expo-router";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import Button from "../../../components/Button";
-
-let name = "Aryan Panpalia"
+import {supabase} from "../../../lib/supabase";
 
 export default function UpdateName() {
-    const [newName, setNewName] = useState(name)
+    const [newName, setNewName] = useState("")
     const [nameError, setNameError] = useState(null);
 
-    function submit() {
+    async function submit() {
         if (!newName) {
             setNameError("Must enter a name")
             return
         }
 
-        name = newName
+        const {error} = await supabase.auth.updateUser({
+            data: {name: newName}
+        })
+
+        if (error) {
+            console.log(error)
+        }
 
         router.back()
     }
+
+    async function fetchName() {
+        const {data, error} = await supabase.auth.getUser()
+
+        if (error) {
+            console.log(error)
+        } else {
+            setNewName(data.user.user_metadata.name)
+        }
+    }
+
+    useEffect(() => {
+        fetchName()
+    }, [])
 
     return (
         <View style={styles.container}>
