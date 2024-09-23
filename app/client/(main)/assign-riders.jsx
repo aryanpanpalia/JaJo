@@ -1,29 +1,18 @@
 import {Animated, FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import BottomBar from '../../../components/client/BottomBar'
 import Header from '../../../components/Header'
 import Button from "../../../components/Button";
 import {MaterialIcons} from "@expo/vector-icons";
 import InputField from "../../../components/InputField";
-
-const riders = [
-    {name: "Teja Singh", number: "+60 11 11343221"},
-    {name: "Ramaswamy Pillai", number: "+60 11 11381008"},
-    {name: "Aryan Panpalia", number: "+1 314 159 2653"},
-    {name: "Rajeev Rai", number: "+59 979 323 8462"},
-    {name: "Sneh Rai", number: "+59 979 323 8462"},
-    {name: "Rajnish Rai", number: "+59 979 323 8462"},
-    {name: "Seema Rai", number: "+59 979 323 8462"},
-]
-
-const data = [
-    {name: "Suasana Sentral", riderIDs: [0, 1]},
-    {name: "The Sentral Residenses", riderIDs: [1]},
-    {name: "The Edge at Polaris", riderIDs: [1]},
-    {name: "Olentangy Falls", riderIDs: []},
-]
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../../lib/supabase";
 
 export default function AssignRiders() {
+    const [riders, setRiders] = useState([])
+    const [locations, setLocations] = useState([])
+    const [assignments, setAssignments] = useState([])
+
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedID, setSelectedID] = useState(null);
 
@@ -49,27 +38,66 @@ export default function AssignRiders() {
         }).start()
     }
 
-    function openModal(ID) {
+    async function openModal(ID) {
+        await fetchRiders()
+        await fetchLocations()
+        await fetchAssignments()
+
         setSelectedID(ID)
         setModalVisible(true)
         darkenBackground()
     }
 
-    function closeModal() {
+    async function closeModal() {
         setSelectedID(null)
         setModalVisible(false)
         lightenBackground()
+
+        await fetchRiders()
+        await fetchLocations()
+        await fetchAssignments()
     }
 
     function Menu() {
         if (selectedID === null) return
 
-        const [selectedRiders, setSelectedRiders] = useState(data[selectedID].riderIDs.map(riderID => riders[riderID]))
+        const location = locations.find(location => location.id === selectedID)
+        const assignmentsAtLocation = assignments.filter(assignment => assignment["location_id"] === location.id)
+        const assignedRiders = assignmentsAtLocation.map(assignment => riders.find(rider => rider.rider_id === assignment.rider_id))
+
+        const [selectedRiders, setSelectedRiders] = useState(assignedRiders)
         const [searchText, setSearchText] = useState("")
 
-        function submit() {
-            data[selectedID].riderIDs = selectedRiders.map(rider => riders.indexOf(rider))
-            closeModal()
+        async function submit() {
+            const ridersRemoved = assignedRiders.filter(rider => !selectedRiders.includes(rider))
+            const ridersAdded = selectedRiders.filter(rider => !assignedRiders.includes(rider))
+
+            const assignmentIDsToDelete = ridersRemoved.map(rider =>
+                assignmentsAtLocation.find(assignment => assignment.rider_id === rider.rider_id).id
+            )
+
+            const assignmentsToInsert = ridersAdded.map(rider => (
+                {rider_id: rider.rider_id, location_id: location.id}
+            ))
+
+            const {error: insertError} = await supabase
+                .from('rider_assignments')
+                .insert(assignmentsToInsert)
+
+            const {error: deleteError} = await supabase
+                .from('rider_assignments')
+                .delete()
+                .in('id', assignmentIDsToDelete)
+
+            if (insertError) {
+                console.log(insertError)
+            }
+
+            if (deleteError) {
+                console.log(deleteError)
+            }
+
+            await closeModal()
         }
 
         const styles = StyleSheet.create({
@@ -128,7 +156,7 @@ export default function AssignRiders() {
                     setSearchText("")
                 }}>
                     <Text style={styles.searchResultName}>{rider.name}</Text>
-                    <Text style={styles.searchResultNumber}>{rider.number}</Text>
+                    <Text style={styles.searchResultNumber}>{rider.phone}</Text>
                 </Pressable>
             )
         }
@@ -138,7 +166,7 @@ export default function AssignRiders() {
                 <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
 
                 <View style={styles.modal}>
-                    <Text style={styles.name}>{data[selectedID].name}</Text>
+                    <Text style={styles.name}>{location.name}</Text>
 
                     <View style={styles.selectedRiders}>
                         {selectedRiders.map((rider, index) => <SelectedRider rider={rider} key={index}/>)}
@@ -168,7 +196,7 @@ export default function AssignRiders() {
         )
     }
 
-    function Location({location: {name, riderIDs}, ...restProps}) {
+    function Location({location: {name, id}, ...restProps}) {
         const styles = StyleSheet.create({
             location: {
                 width: "100%",
@@ -188,16 +216,19 @@ export default function AssignRiders() {
             },
         })
 
+        const assignmentsAtLocation = assignments.filter(assignment => assignment["location_id"] === id)
+        const assignedRiders = assignmentsAtLocation.map(assignment => riders.find(rider => rider.rider_id === assignment.rider_id))
+
         return (
             <Pressable style={styles.location} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
 
                 <View style={styles.riders}>{
-                    riderIDs.length > 0 ? (
-                        riderIDs.map((riderID, index) => (
+                    assignedRiders.length > 0 ? (
+                        assignedRiders.map((rider, index) => (
                             <View style={styles.rider} key={index}>
-                                <Text>{riders[riderID].name}</Text>
-                                <Text>{riders[riderID].number}</Text>
+                                <Text>{rider.name}</Text>
+                                <Text>{rider.phone}</Text>
                             </View>
                         ))
                     ) : (
@@ -208,13 +239,67 @@ export default function AssignRiders() {
         )
     }
 
+    async function fetchRiders() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: riders, error} = await supabase
+            .rpc('get_client_riders', {p_client_id: clientID})
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setRiders(riders)
+        }
+    }
+
+    async function fetchLocations() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: locations, error} = await supabase
+            .from('locations')
+            .select('id, name, home_delivery, availability')
+            .eq('client_id', clientID)
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setLocations(locations)
+        }
+    }
+
+    async function fetchAssignments() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: assignments, error} = await supabase
+            .rpc('get_rider_assignments', {p_client_id: clientID})
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setAssignments(assignments)
+        }
+    }
+
+    async function fetch() {
+        await fetchRiders()
+        await fetchLocations()
+        await fetchAssignments()
+    }
+
+    useEffect(() => {
+        fetch()
+    }, [])
+
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <Header label={"Riders"}/>
 
             <ScrollView contentContainerStyle={styles.locations}>
-                {data.map((item, index) => (
-                    <Location key={index} location={item} onPress={() => openModal(index)}/>
+                {locations.map((location, index) => (
+                    <Location key={index} location={location} onPress={() => openModal(location.id)}/>
                 ))}
             </ScrollView>
 
