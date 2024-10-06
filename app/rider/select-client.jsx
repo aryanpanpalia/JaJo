@@ -1,16 +1,39 @@
 import {StyleSheet, Text, View} from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Dropdown} from "react-native-element-dropdown";
 import Button from "../../components/Button";
 import {router} from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../lib/supabase";
 
-const data = [
-    {value: "Panpalia Products"},
-    {value: "Garcia Groceries"}
-]
 
 export default function SelectClient() {
+    const [clients, setClients] = useState([])
     const [client, setClient] = useState()
+
+    async function fetchClients() {
+        const riderID = parseInt(await AsyncStorage.getItem("riderID"))
+
+        const {data: clients, error} = await supabase
+            .rpc('get_rider_clients', {p_rider_id: riderID})
+            .order('client_id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setClients(clients)
+        }
+    }
+
+    async function submit() {
+        await AsyncStorage.setItem("clientID", client["client_id"].toString())
+
+        router.push("/rider/dashboard")
+    }
+
+    useEffect(() => {
+        fetchClients()
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -20,9 +43,9 @@ export default function SelectClient() {
             </View>
             <View style={styles.form}>
                 <Text style={styles.dropdownLabel}>Select Client</Text>
-                <Dropdown style={styles.dropdown} data={data} labelField={'value'} valueField={'value'} onChange={setClient}/>
+                <Dropdown style={styles.dropdown} data={clients} labelField={'client_name'} valueField={'client_id'} onChange={setClient}/>
             </View>
-            <Button text={"Next"} dark={true} width={"100%"} height={50} onPress={() => router.push("/rider/dashboard")} />
+            <Button text={"Next"} dark={true} width={"100%"} height={50} onPress={submit}/>
         </View>
     )
 }
