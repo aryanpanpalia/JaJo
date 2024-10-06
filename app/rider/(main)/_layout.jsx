@@ -5,10 +5,14 @@ import {StyleSheet} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {MaterialIcons} from '@expo/vector-icons';
 import {supabase} from "../../../lib/supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function CustomDrawerContent(props) {
     async function logout() {
         const {error} = await supabase.auth.signOut()
+
+        await AsyncStorage.removeItem("riderID")
+        await AsyncStorage.removeItem("clientID")
 
         if(error) {
             console.log(error)
