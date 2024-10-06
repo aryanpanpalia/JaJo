@@ -170,7 +170,7 @@ export default function CustomerManagement() {
                 {data.map((item, index) =>
                     <Customer key={index} customer={item} onPress={() => openModal(index)}/>
                 )}
-                <Ionicons name="add-circle-outline" size={50} color="black" onPress={openModal}/>
+                <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
             </ScrollView>
 
             <BottomBar/>
