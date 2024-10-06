@@ -1,19 +1,15 @@
 import {Ionicons} from '@expo/vector-icons'
-import React, {useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Animated, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
 import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import InputField from '../../../components/InputField'
 import BottomBar from "../../../components/rider/BottomBar";
-
-const data = [
-    {name: "Charan Kumar", phone: "+60 11 11381008"},
-    {name: "Krishna Kumar", phone: "+60 11 11343221"},
-    {name: "Rajeev Rai", phone: "+1 314 159 2653"},
-    {name: "Aryan Panpalia", phone: "+1 271 828 1828"},
-]
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../../lib/supabase";
 
 export default function CustomerManagement() {
+    const [customers, setCustomers] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
 
     const backgroundColor = useRef(new Animated.Value(0)).current
@@ -24,22 +20,36 @@ export default function CustomerManagement() {
     })
 
     function Menu() {
-        const [newName, setNewName] = useState("");
-        const [nameError, setNameError] = useState(null);
-
         const [newPhone, setNewPhone] = useState("");
-        const [phoneError, setPhoneError] = useState(null);
+        const [phoneError, setPhoneError] = useState("");
 
-        function submit() {
-            setNameError(!newName && "Must enter a name")
-            setPhoneError(!newPhone && "Must enter a phone number")
-            if (!newName || !newPhone) return
+        async function submit() {
+            setPhoneError(!newPhone ? "Must enter a phone number" : "")
+            if (!newPhone) return
 
-            const newValue = {name: newName, phone: newPhone}
+            const clientID = parseInt(await AsyncStorage.getItem("clientID"))
 
-            data.push(newValue)
+            const {data: customerID, error: customerIDError} = await supabase
+                .rpc('get_customer_id_by_phone', {phone_number: newPhone})
 
-            closeModal()
+            if (customerIDError) {
+                console.log(customerIDError)
+                return
+            }
+            if (customerID === null) {
+                setPhoneError("Phone number not associated to any Customer")
+                return
+            }
+
+            const {error: insertError} = await supabase
+                .from('client_customers')
+                .insert({client_id: clientID, customer_id: customerID})
+
+            if (insertError) {
+                console.log(insertError)
+            }
+
+            await closeModal()
         }
 
         const paddingBottom = useRef(new Animated.Value(40)).current
@@ -85,14 +95,6 @@ export default function CustomerManagement() {
 
                     <Animated.View style={[styles.modal, {paddingBottom: paddingBottom}]}>
                         <InputField
-                            label={"Name"}
-                            placeholder={"Enter Name Here"}
-                            onPress={slideUp}
-                            value={newName}
-                            onChangeText={setNewName}
-                            error={nameError}
-                        />
-                        <InputField
                             label={"Phone Number"}
                             placeholder={"Enter Phone Number Here"}
                             onPress={slideUp}
@@ -135,7 +137,8 @@ export default function CustomerManagement() {
         )
     }
 
-    function openModal() {
+    async function openModal() {
+        await fetchCustomers()
         setModalVisible(true)
 
         Animated.timing(backgroundColor, {
@@ -145,7 +148,8 @@ export default function CustomerManagement() {
         }).start()
     }
 
-    function closeModal() {
+    async function closeModal() {
+        await fetchCustomers()
         setModalVisible(false)
 
         Animated.timing(backgroundColor, {
@@ -155,14 +159,30 @@ export default function CustomerManagement() {
         }).start()
     }
 
+    async function fetchCustomers() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+
+        const {data: customers, error} = await supabase
+            .rpc('get_client_customers', {p_client_id: clientID})
+            .order('id', {ascending: true})
+
+        if (error) {
+            console.log(error)
+        } else {
+            setCustomers(customers)
+        }
+    }
+
+    useEffect(() => {
+        fetchCustomers()
+    }, [])
+
     return (
         <Animated.View style={[styles.container, {backgroundColor: interpolatedColor}]}>
             <Header label={"Customers"}/>
 
             <ScrollView contentContainerStyle={styles.customers}>
-                {data.map((item, index) =>
-                    <Customer key={index} customer={item}/>
-                )}
+                {customers.map((customer, index) => <Customer key={index} customer={customer}/>)}
                 <Ionicons name="add-circle-outline" size={50} color="black" onPress={() => openModal()}/>
             </ScrollView>
 
