@@ -99,6 +99,19 @@ export default function SignUp() {
 
                 router.replace("/client/dashboard")
             } else if (role === "Rider") {
+                const {data: {id}, error} = await supabase
+                    .from('riders')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .single()
+
+                if(error) {
+                    console.log(error)
+                    return
+                }
+
+                await AsyncStorage.setItem("riderID", id.toString())
+
                 router.replace("/rider/select-client")
             } else {
                 console.log("Attempting to login Customer. Functionality not implemented yet.")
