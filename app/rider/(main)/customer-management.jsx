@@ -7,10 +7,10 @@ import InputField from '../../../components/InputField'
 import BottomBar from "../../../components/rider/BottomBar";
 
 const data = [
-    {name: "Charan Kumar", number: "+60 11 11381008"},
-    {name: "Krishna Kumar", number: "+60 11 11343221"},
-    {name: "Rajeev Rai", number: "+1 314 159 2653"},
-    {name: "Aryan Panpalia", number: "+1 271 828 1828"},
+    {name: "Charan Kumar", phone: "+60 11 11381008"},
+    {name: "Krishna Kumar", phone: "+60 11 11343221"},
+    {name: "Rajeev Rai", phone: "+1 314 159 2653"},
+    {name: "Aryan Panpalia", phone: "+1 271 828 1828"},
 ]
 
 export default function CustomerManagement() {
@@ -28,15 +28,15 @@ export default function CustomerManagement() {
         const [newName, setNewName] = useState(data[selectedID]?.name ?? "");
         const [nameError, setNameError] = useState(null);
 
-        const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
-        const [numberError, setNumberError] = useState(null);
+        const [newPhone, setNewPhone] = useState(data[selectedID]?.phone ?? "");
+        const [phoneError, setPhoneError] = useState(null);
 
         function submit() {
             setNameError(!newName && "Must enter a name")
-            setNumberError(!newNumber && "Must enter a number")
-            if (!newName || !newNumber) return
+            setPhoneError(!newPhone && "Must enter a phone number")
+            if (!newName || !newPhone) return
 
-            const newValue = {name: newName, number: newNumber}
+            const newValue = {name: newName, phone: newPhone}
 
             if (selectedID === undefined) {
                 data.push(newValue)
@@ -98,13 +98,13 @@ export default function CustomerManagement() {
                             error={nameError}
                         />
                         <InputField
-                            label={"Number"}
+                            label={"Phone Number"}
                             placeholder={"Enter Phone Number Here"}
                             onPress={slideUp}
                             keyboardType={"phone-pad"}
-                            value={newNumber}
-                            onChangeText={setNewNumber}
-                            error={numberError}
+                            value={newPhone}
+                            onChangeText={setNewPhone}
+                            error={phoneError}
                         />
 
                         <View style={styles.buttons}>
@@ -117,7 +117,7 @@ export default function CustomerManagement() {
         )
     }
 
-    function Customer({customer: {name, number}, ...restProps}) {
+    function Customer({customer: {name, phone}, ...restProps}) {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
@@ -135,7 +135,7 @@ export default function CustomerManagement() {
         return (
             <Pressable style={styles.customer} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
-                <Text>{number}</Text>
+                <Text>{phone}</Text>
             </Pressable>
         )
     }
