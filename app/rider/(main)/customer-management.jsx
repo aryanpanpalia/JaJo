@@ -7,10 +7,10 @@ import InputField from '../../../components/InputField'
 import BottomBar from "../../../components/rider/BottomBar";
 
 const data = [
-    {name: "Charan Kumar", number: "+60 11 11381008", location: "Suasana Sentral", address: null},
-    {name: "Krishna Kumar", number: "+60 11 11343221", location: "The Sentral Residenses", address: null},
-    {name: "Rajeev Rai", number: "+1 314 159 2653", location: "The Ohio State University", address: null},
-    {name: "Aryan Panpalia", number: "+1 271 828 1828", location: "White House", address: "1600 Pennsylvania Avenue"},
+    {name: "Charan Kumar", number: "+60 11 11381008"},
+    {name: "Krishna Kumar", number: "+60 11 11343221"},
+    {name: "Rajeev Rai", number: "+1 314 159 2653"},
+    {name: "Aryan Panpalia", number: "+1 271 828 1828"},
 ]
 
 export default function CustomerManagement() {
@@ -31,18 +31,12 @@ export default function CustomerManagement() {
         const [newNumber, setNewNumber] = useState(data[selectedID]?.number ?? "");
         const [numberError, setNumberError] = useState(null);
 
-        const [newLocation, setNewLocation] = useState(data[selectedID]?.location ?? "");
-        const [locationError, setLocationError] = useState(null);
-
-        const [newAddress, setNewAddress] = useState(data[selectedID]?.address ?? "");
-
         function submit() {
             setNameError(!newName && "Must enter a name")
             setNumberError(!newNumber && "Must enter a number")
-            setLocationError(!newLocation && "Must enter a location")
-            if (!newName || !newNumber || !newLocation) return
+            if (!newName || !newNumber) return
 
-            const newValue = {name: newName, number: newNumber, location: newLocation, address: newAddress}
+            const newValue = {name: newName, number: newNumber}
 
             if (selectedID === undefined) {
                 data.push(newValue)
@@ -112,21 +106,6 @@ export default function CustomerManagement() {
                             onChangeText={setNewNumber}
                             error={numberError}
                         />
-                        <InputField
-                            label={"Location"}
-                            placeholder={"Enter Location Here"}
-                            onPress={slideUp}
-                            value={newLocation}
-                            onChangeText={setNewLocation}
-                            error={locationError}
-                        />
-                        <InputField
-                            label={"Address (optional)"}
-                            placeholder={"Enter Address Here"}
-                            onPress={slideUp}
-                            value={newAddress}
-                            onChangeText={setNewAddress}
-                        />
 
                         <View style={styles.buttons}>
                             <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
@@ -138,7 +117,7 @@ export default function CustomerManagement() {
         )
     }
 
-    function Customer({customer: {name, number, location, address}, ...restProps}) {
+    function Customer({customer: {name, number}, ...restProps}) {
         const styles = StyleSheet.create({
             customer: {
                 width: "100%",
@@ -148,7 +127,7 @@ export default function CustomerManagement() {
                 gap: 5
             },
             name: {
-                fontSize: 24,
+                fontSize: 18,
                 fontWeight: "600"
             }
         })
@@ -157,8 +136,6 @@ export default function CustomerManagement() {
             <Pressable style={styles.customer} {...restProps}>
                 <Text style={styles.name}>{name}</Text>
                 <Text>{number}</Text>
-                {address && <Text>{address}</Text>}
-                <Text>{location}</Text>
             </Pressable>
         )
     }
