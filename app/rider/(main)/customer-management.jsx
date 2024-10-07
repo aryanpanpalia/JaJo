@@ -75,17 +75,12 @@ export default function CustomerManagement() {
                 borderRadius: 10,
                 paddingHorizontal: 25,
                 paddingVertical: 50,
-                gap: 15,
-            },
-            buttons: {
-                flexDirection: "row",
-                gap: 10
+                gap: 15
             }
         })
 
         return (
             <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
-
                 <Pressable style={{flex: 1}} onPress={closeModal} transparent={true}/>
 
                 <TouchableWithoutFeedback onPress={() => {
@@ -104,10 +99,7 @@ export default function CustomerManagement() {
                             error={phoneError}
                         />
 
-                        <View style={styles.buttons}>
-                            <Button text={"Submit"} dark={true} width={100} height={50} onPress={submit}/>
-                            <Button text={"Cancel"} dark={false} width={100} height={50} onPress={closeModal}/>
-                        </View>
+                        <Button text={"Submit"} dark={true} width={"100%"} height={50} onPress={submit}/>
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </Modal>
