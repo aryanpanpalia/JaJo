@@ -1,27 +1,61 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Pressable, StyleSheet, Text, View} from "react-native";
 import {router} from "expo-router";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import Button from "../../../components/Button";
-
-let availability = ['M', 'W', 'Sa', 'Su']
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {supabase} from "../../../lib/supabase";
 
 export default function UpdateAvailability() {
-    const [newAvailability, setNewAvailability] = useState(availability);
+    const [availability, setAvailability] = useState({
+        "Monday": false, "Tuesday": false, "Wednesday": false, "Thursday": false, "Friday": false, "Saturday": false, "Sunday": false
+    })
+
+    const dayLabels = ["M", "Tu", "W", "Th", "F", "Sa", "Su"]
+    const dayLabelToDay = {"M": "Monday", "Tu": "Tuesday", "W": "Wednesday", "Th": "Thursday", "F": "Friday", "Sa": "Saturday", "Su": "Sunday"}
 
     function toggleDayAvailability(day) {
-        if (newAvailability.includes(day)) {
-            setNewAvailability(newAvailability.filter((item) => item !== day))
-        } else {
-            setNewAvailability([...newAvailability, day])
-        }
+        setAvailability({...availability, [day]: !availability[day]})
     }
 
-    function submit() {
-        availability = newAvailability
+    async function submit() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+        const riderID = parseInt(await AsyncStorage.getItem("riderID"))
+
+        const {error} = await supabase
+            .from("client_riders")
+            .update({availability: availability})
+            .eq('client_id', clientID)
+            .eq('rider_id', riderID)
+
+        if (error) {
+            console.log(error)
+        }
 
         router.back()
     }
+
+    async function fetchAvailability() {
+        const clientID = parseInt(await AsyncStorage.getItem("clientID"))
+        const riderID = parseInt(await AsyncStorage.getItem("riderID"))
+
+        const {data: {availability}, error} = await supabase
+            .from('client_riders')
+            .select('availability')
+            .eq('client_id', clientID)
+            .eq('rider_id', riderID)
+            .single()
+
+        if (error) {
+            console.log(error)
+        } else {
+            setAvailability(availability)
+        }
+    }
+
+    useEffect(() => {
+        fetchAvailability()
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -34,17 +68,21 @@ export default function UpdateAvailability() {
 
             <View style={styles.availability}>
                 <Text style={styles.availabilityText}>Availability</Text>
-
                 <View style={styles.availabilityCircles}>
-                    {['M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su'].map(day => {
-                        const daySelected = newAvailability.includes(day)
+                    {dayLabels.map(dayLabel => {
+                        const day = dayLabelToDay[dayLabel]
+                        const daySelected = availability[day]
+
+                        const circleStyle = [styles.availabilityCircle, daySelected && {backgroundColor: "black"}]
+                        const textStyle = [styles.availabilityCircleText, daySelected && {color: "white"}]
+
                         return (
                             <Pressable
-                                style={[styles.availabilityCircle, daySelected && styles.selected]}
+                                style={circleStyle}
                                 key={day}
                                 onPress={() => toggleDayAvailability(day)}
                             >
-                                <Text style={[styles.availabilityCircleText, daySelected && styles.selected]}>{day}</Text>
+                                <Text style={textStyle}>{dayLabel}</Text>
                             </Pressable>
                         )
                     })}
