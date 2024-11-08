@@ -15,7 +15,7 @@ function CustomDrawerContent(props) {
         await AsyncStorage.removeItem("clientID")
 
         if(error) {
-            console.log(error)
+            console.log("Rider-layout-logout: ", error)
         } else {
             router.replace("/auth/login")
         }

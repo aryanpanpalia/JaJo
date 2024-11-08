@@ -64,7 +64,7 @@ export default function ProductManagement() {
                     .insert({...productValues})
 
                 if (error) {
-                    console.log(error)
+                    console.log("Client-productManagement-submit: ", error)
                 }
             } else {
                 const {error} = await supabase
@@ -73,7 +73,7 @@ export default function ProductManagement() {
                     .eq('id', selectedID)
 
                 if (error) {
-                    console.log(error)
+                    console.log("Client-productManagement-submit: ", error)
                 }
             }
 
@@ -291,7 +291,7 @@ export default function ProductManagement() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-productManagement-fetchProducts: ", error)
         } else {
             setProducts(products)
         }

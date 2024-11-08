@@ -56,7 +56,7 @@ export default function SignUp() {
 
         if (error) {
             setNumberError("Invalid. Use only numbers and include country code")
-            console.log(error)
+            console.log("signup-sendOTP: ", error)
         } else {
             setWaitingForOTP(true)
         }
@@ -78,7 +78,7 @@ export default function SignUp() {
         setLoading(false)
 
         if (error) {
-            console.log(error)
+            console.log("signup-verifyOTP: ", error)
         } else {
             const {data: {user}} = await supabase.auth.getUser()
             const role = user.user_metadata.role
@@ -91,7 +91,7 @@ export default function SignUp() {
                     .single()
 
                 if (error) {
-                    console.log(error)
+                    console.log("signup-verifyOTP(client): ", error)
                     return
                 }
 
@@ -106,7 +106,7 @@ export default function SignUp() {
                     .single()
 
                 if(error) {
-                    console.log(error)
+                    console.log("signup-verifyOTP(rider): ", error)
                     return
                 }
 

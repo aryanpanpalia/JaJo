@@ -33,7 +33,7 @@ export default function LogIn() {
         if (error) {
             setNumberError("Invalid Login Credentials")
             setPasswordError("Invalid Login Credentials")
-            console.log(error)
+            console.log("login-signIn: ", error)
         } else {
             const role = user.user_metadata.role
 
@@ -45,7 +45,7 @@ export default function LogIn() {
                     .single()
 
                 if (error) {
-                    console.log(error)
+                    console.log("login-signIn(client): ", error)
                     return
                 }
 
@@ -60,7 +60,7 @@ export default function LogIn() {
                     .single()
 
                 if(error) {
-                    console.log(error)
+                    console.log("login-signIn(rider): ", error)
                     return
                 }
 

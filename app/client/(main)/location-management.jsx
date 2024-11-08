@@ -57,7 +57,7 @@ export default function LocationManagement() {
                     .insert(locationValues)
 
                 if (error) {
-                    console.log(error)
+                    console.log("Client-locationManagement-submit: ", error)
                 }
             } else {
                 const {error} = await supabase
@@ -66,7 +66,7 @@ export default function LocationManagement() {
                     .eq('id', selectedID)
 
                 if (error) {
-                    console.log(error)
+                    console.log("Client-locationManagement-submit: ", error)
                 }
             }
 
@@ -275,7 +275,7 @@ export default function LocationManagement() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-locationManagement-fetchLocations: ", error)
         } else {
             setLocations(locations)
         }

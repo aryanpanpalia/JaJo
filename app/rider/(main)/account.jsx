@@ -21,7 +21,7 @@ export default function Account() {
         const {data, error} = await supabase.auth.getUser()
 
         if (error) {
-            console.log(error)
+            console.log("Rider-account-fetchName: ", error)
         } else {
             setName(data.user.user_metadata.name)
         }
@@ -31,7 +31,7 @@ export default function Account() {
         const {data, error} = await supabase.auth.getUser()
 
         if (error) {
-            console.log(error)
+            console.log("Rider-account-fetchPhone: ", error)
         } else {
             setPhone(data.user.phone)
         }
@@ -47,7 +47,7 @@ export default function Account() {
             .single()
 
         if (error) {
-            console.log(error)
+            console.log("Rider-account-fetchClientName: ", error)
         } else {
             setClientName(client_name)
         }
@@ -65,7 +65,7 @@ export default function Account() {
             .single()
 
         if (error) {
-            console.log(error)
+            console.log("Rider-account-fetchAvailability: ", error)
         } else {
             setAvailability(availability)
         }

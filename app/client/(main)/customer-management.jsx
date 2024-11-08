@@ -33,7 +33,7 @@ export default function CustomerManagement() {
                 .rpc('get_customer_id_by_phone', {phone_number: newPhone})
 
             if (customerIDError) {
-                console.log(customerIDError)
+                console.log("Client-customerManagement-submit: ", customerIDError)
                 return
             }
             if (customerID === null) {
@@ -46,7 +46,7 @@ export default function CustomerManagement() {
                 .insert({client_id: clientID, customer_id: customerID})
 
             if (insertError) {
-                console.log(insertError)
+                console.log("Client-customerManagement-submit: ", insertError)
             }
 
             await closeModal()
@@ -159,7 +159,7 @@ export default function CustomerManagement() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-customerManagement-fetchCustomers: ", error)
         } else {
             setCustomers(customers)
         }

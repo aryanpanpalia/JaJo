@@ -25,7 +25,7 @@ export default function UpdateClientName() {
             .eq('id', clientID)
 
         if (error) {
-            console.log(error)
+            console.log("Client-clientName-submit: ", error)
         }
 
         router.back()
@@ -41,7 +41,7 @@ export default function UpdateClientName() {
             .single()
 
         if (error) {
-            console.log(error)
+            console.log("Client-clientName-fetchClientName: ", error)
         } else {
             const {client_name} = data
             setNewClientName(client_name)

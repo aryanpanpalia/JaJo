@@ -15,7 +15,7 @@ export default function Account() {
         const {data, error} = await supabase.auth.getUser()
 
         if (error) {
-            console.log(error)
+            console.log("Client-account-fetchName: ", error)
         } else {
             setName(data.user.user_metadata.name)
         }
@@ -25,7 +25,7 @@ export default function Account() {
         const {data, error} = await supabase.auth.getUser()
 
         if (error) {
-            console.log(error)
+            console.log("Client-account-fetchPhone: ", error)
         } else {
             setPhone(data.user.phone)
         }
@@ -41,7 +41,7 @@ export default function Account() {
             .single()
 
         if (error) {
-            console.log(error)
+            console.log("Client-account-fetchClientName: ", error)
         } else {
             const {client_name} = data
             setClientName(client_name)

@@ -47,7 +47,7 @@ export default function StaffManagement() {
                     .rpc('get_rider_id_by_phone', {phone_number: newPhone})
 
                 if (riderIDError) {
-                    console.log(riderIDError)
+                    console.log("Client-staffManagement-submit: ", riderIDError)
                     return
                 }
                 if (riderID === null) {
@@ -60,7 +60,7 @@ export default function StaffManagement() {
                     .insert({client_id: clientID, rider_id: riderID, availability: newAvailability})
 
                 if (insertError) {
-                    console.log(insertError)
+                    console.log("Client-staffManagement-submit: ", insertError)
                 }
             } else {
                 const {error} = await supabase
@@ -69,7 +69,7 @@ export default function StaffManagement() {
                     .eq('id', selectedID)
 
                 if (error) {
-                    console.log(error)
+                    console.log("Client-staffManagement-submit: ", error)
                 }
             }
 
@@ -272,7 +272,7 @@ export default function StaffManagement() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-staffManagement-fetchRiders: ", error)
         } else {
             setRiders(riders)
         }

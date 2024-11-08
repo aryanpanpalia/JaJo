@@ -19,7 +19,7 @@ export default function SelectClient() {
             .order('client_id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Rider-selectClient-fetchClients: ", error)
         } else {
             setClients(clients)
         }

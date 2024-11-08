@@ -29,7 +29,7 @@ export default function UpdateAvailability() {
             .eq('rider_id', riderID)
 
         if (error) {
-            console.log(error)
+            console.log("Rider-availability-submit: ", error)
         }
 
         router.back()
@@ -47,7 +47,7 @@ export default function UpdateAvailability() {
             .single()
 
         if (error) {
-            console.log(error)
+            console.log("Rider-availability-fetchAvailability: ", error)
         } else {
             setAvailability(availability)
         }

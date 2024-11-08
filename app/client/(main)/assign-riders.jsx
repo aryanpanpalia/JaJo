@@ -90,11 +90,11 @@ export default function AssignRiders() {
                 .in('id', assignmentIDsToDelete)
 
             if (insertError) {
-                console.log(insertError)
+                console.log("Client-assignRiders-submit: ", insertError)
             }
 
             if (deleteError) {
-                console.log(deleteError)
+                console.log("Client-assignRiders-submit: ", deleteError)
             }
 
             await closeModal()
@@ -247,7 +247,7 @@ export default function AssignRiders() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-assignRiders-fetchRiders: ", error)
         } else {
             setRiders(riders)
         }
@@ -263,7 +263,7 @@ export default function AssignRiders() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-assignRiders-fetchLocations: ", error)
         } else {
             setLocations(locations)
         }
@@ -277,7 +277,7 @@ export default function AssignRiders() {
             .order('id', {ascending: true})
 
         if (error) {
-            console.log(error)
+            console.log("Client-assignRiders-fetchAssignments: ", error)
         } else {
             setAssignments(assignments)
         }

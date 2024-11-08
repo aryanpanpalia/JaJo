@@ -21,7 +21,7 @@ export default function UpdateName() {
         })
 
         if (error) {
-            console.log(error)
+            console.log("Client-name-submit: ", error)
         }
 
         router.back()
@@ -31,7 +31,7 @@ export default function UpdateName() {
         const {data, error} = await supabase.auth.getUser()
 
         if (error) {
-            console.log(error)
+            console.log("Client-name-fetchName: ", error)
         } else {
             setNewName(data.user.user_metadata.name)
         }
